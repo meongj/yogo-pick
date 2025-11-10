@@ -1,1 +1,1 @@
-# yogo-pick
+# YogoPick
