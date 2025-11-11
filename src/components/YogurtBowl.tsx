@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import yogartBowl from "../../public/images/bowl/yogartBowl.jpg";
 
 interface YogurtBowlProps {
-  // 클릭 가능한 영역을 정의하는 clip-path (기본값: circle)
+  // 클릭 가능한 영역을 정의하는 clip-path
   clipPath?: string;
   isSelectd: boolean;
   toppingImage: string; // Add toppingImage prop to receive the image source
@@ -28,8 +28,6 @@ export function YogurtBowl({clipPath = "circle(30% at 50% 50%)", isSelectd, topp
   }, []);
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    console.log("Date.now()", Date.now(), e.clientX, e.clientY);
-
     setPlacedImages([...placedImages, {x: e.clientX, y: e.clientY, id: Date.now()}]);
   };
 
