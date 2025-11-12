@@ -1,18 +1,19 @@
 import {useEffect, useState} from "react";
 import yogartBowl from "../../public/images/bowl/yogartBowl.jpg";
+import type {Topping} from "../types/Topping";
 
 interface YogurtBowlProps {
   // 클릭 가능한 영역을 정의하는 clip-path
   clipPath?: string;
-  isSelectd: boolean;
-  toppingImage: string; // Add toppingImage prop to receive the image source
+  toppings: Topping[];
+  selectedTopping: Topping | null;
 }
 
-export function YogurtBowl({clipPath = "circle(30% at 50% 50%)", isSelectd, toppingImage}: YogurtBowlProps) {
+export function YogurtBowl({clipPath = "circle(30% at 50% 50%)", toppings, selectedTopping}: YogurtBowlProps) {
   // 마우스 위치
   const [mousePos, setMousePos] = useState({x: 0, y: 0});
-  // 클릭한 위치
-  const [placedImages, setPlacedImages] = useState<{x: number; y: number; id: number}[]>([]);
+  // 클릭한 위치와 어떤 이미지 인지
+  const [placedImages, setPlacedImages] = useState<{x: number; y: number; id: number; image: string}[]>([]);
 
   // 마우스무브 이벤트리스너 추가
   useEffect(() => {
@@ -28,7 +29,8 @@ export function YogurtBowl({clipPath = "circle(30% at 50% 50%)", isSelectd, topp
   }, []);
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    setPlacedImages([...placedImages, {x: e.clientX, y: e.clientY, id: Date.now()}]);
+    if (!selectedTopping) return; // null 체크
+    setPlacedImages([...placedImages, {x: e.clientX, y: e.clientY, id: Date.now(), image: selectedTopping.image}]);
   };
 
   return (
@@ -36,10 +38,11 @@ export function YogurtBowl({clipPath = "circle(30% at 50% 50%)", isSelectd, topp
       <img src={yogartBowl} alt="Yogurt Bowl" className="pointer-events-none" />
       <div className="absolute inset-0 cursor-pointer" style={{clipPath}} onClick={handleClick} />
       <div>
-        {isSelectd ? (
+        {selectedTopping && (
           <img
-            src={toppingImage}
-            alt="딸기"
+            key={selectedTopping.id}
+            src={selectedTopping.image}
+            alt={selectedTopping.name}
             className="w-13 h-13 object-contain"
             style={{
               position: "fixed",
@@ -48,19 +51,18 @@ export function YogurtBowl({clipPath = "circle(30% at 50% 50%)", isSelectd, topp
               pointerEvents: "none", // 마우스 이벤트 차단 방지
             }}
           />
-        ) : null}
+        )}
       </div>
 
       {placedImages.map((img) => (
         <img
           key={img.id}
-          src={toppingImage}
+          src={img.image}
+          alt="배치된 토핑"
+          className="fixed w-[60px] h-[60px] object-contain pointer-events-none scale-100"
           style={{
-            position: "fixed",
             left: `${img.x}px`,
             top: `${img.y}px`,
-            width: "50px",
-            height: "50px",
           }}
         />
       ))}

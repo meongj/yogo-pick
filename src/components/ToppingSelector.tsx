@@ -6,9 +6,10 @@ import cherry from "../../public/images/toppings/cherry.png";
 import cheshunet from "../../public/images/toppings/cheshunet.png";
 import mango from "../../public/images/toppings/mango.png";
 import {useState} from "react";
+import type {Topping} from "../types/Topping";
 
 interface ToppingSelectorProps {
-  onToppingSelect: (image: string) => void;
+  onToppingSelect: (topping: Topping) => void;
 }
 
 const toppings = [
@@ -26,8 +27,8 @@ const toppings = [
 export function ToppingSelector({onToppingSelect}: ToppingSelectorProps) {
   const [hoverTopping, setHoverTopping] = useState<string>(""); // id
 
-  const handleSelect = (image: string) => {
-    onToppingSelect(image);
+  const handleSelect = (topping: Topping) => {
+    onToppingSelect(topping);
   };
 
   return (
@@ -35,7 +36,7 @@ export function ToppingSelector({onToppingSelect}: ToppingSelectorProps) {
       {toppings.map((topping) => (
         <div
           key={topping.id}
-          className={`flex flex-col items-center p-2 rounded-lg relative ${hoverTopping === topping.id ? "scale-120" : "scale-100"}`}
+          className={`flex flex-col items-center p-2 rounded-lg relative ${hoverTopping === topping.id ? "scale-120 " : "scale-100"}`}
           onMouseEnter={() => {
             setHoverTopping(topping.id);
           }}
@@ -43,8 +44,8 @@ export function ToppingSelector({onToppingSelect}: ToppingSelectorProps) {
             setHoverTopping("");
           }}>
           <button
-            className="bg-transparent hover:bg-amber-50 rounded-full p-2 "
-            onClick={() => handleSelect(topping.image)}>
+            className="bg-transparent hover:bg-amber-50 rounded-full p-2 cursor-pointer"
+            onClick={() => handleSelect(topping)}>
             <img src={topping.image} alt={topping.name} className="w-13 h-13 object-contain" />
           </button>
           <span
