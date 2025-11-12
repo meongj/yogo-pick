@@ -44,7 +44,7 @@ export function ToppingSelector({onToppingSelect}: ToppingSelectorProps) {
             setHoverTopping("");
           }}>
           <button
-            className="bg-transparent hover:bg-amber-50 rounded-full p-2 cursor-pointer  focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="bg-transparent hover:bg-amber-50 rounded-full p-2 cursor-pointer"
             onClick={() => handleSelect(topping)}
             aria-label={`${topping.name} 토핑 선택`}>
             <img src={topping.image} alt={topping.name} className="w-13 h-13 object-contain" />

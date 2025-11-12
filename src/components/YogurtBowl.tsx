@@ -12,7 +12,7 @@ export function YogurtBowl({clipPath = "circle(30% at 50% 50%)", selectedTopping
   // 마우스 위치
   const [mousePos, setMousePos] = useState({x: 0, y: 0});
   // 클릭한 위치와 어떤 이미지 인지
-  const [placedImages, setPlacedImages] = useState<{x: number; y: number; id: number; image: string}[]>([]);
+  const [placedImages, setPlacedImages] = useState<{x: number; y: number; id: string; image: string}[]>([]);
 
   // 마우스무브 이벤트리스너 추가
   useEffect(() => {
@@ -29,7 +29,10 @@ export function YogurtBowl({clipPath = "circle(30% at 50% 50%)", selectedTopping
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!selectedTopping) return; // null 체크
-    setPlacedImages([...placedImages, {x: e.clientX, y: e.clientY, id: Date.now(), image: selectedTopping.image}]);
+    setPlacedImages([
+      ...placedImages,
+      {x: e.clientX, y: e.clientY, id: crypto.randomUUID(), image: selectedTopping.image},
+    ]);
   };
 
   return (
