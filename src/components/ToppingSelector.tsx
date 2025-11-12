@@ -31,11 +31,11 @@ export function ToppingSelector({onToppingSelect}: ToppingSelectorProps) {
   };
 
   return (
-    <div className="flex flex-row gap-1 px-1 ">
+    <div className="flex flex-row gap-1 px-1 z-50 relative">
       {toppings.map((topping) => (
         <div
           key={topping.id}
-          className="flex flex-col items-center p-2 rounded-lg relative"
+          className={`flex flex-col items-center p-2 rounded-lg relative ${hoverTopping === topping.id ? "scale-120" : "scale-100"}`}
           onMouseEnter={() => {
             setHoverTopping(topping.id);
           }}
