@@ -5,11 +5,10 @@ import type {Topping} from "../types/Topping";
 interface YogurtBowlProps {
   // 클릭 가능한 영역을 정의하는 clip-path
   clipPath?: string;
-  toppings: Topping[];
   selectedTopping: Topping | null;
 }
 
-export function YogurtBowl({clipPath = "circle(30% at 50% 50%)", toppings, selectedTopping}: YogurtBowlProps) {
+export function YogurtBowl({clipPath = "circle(30% at 50% 50%)", selectedTopping}: YogurtBowlProps) {
   // 마우스 위치
   const [mousePos, setMousePos] = useState({x: 0, y: 0});
   // 클릭한 위치와 어떤 이미지 인지
