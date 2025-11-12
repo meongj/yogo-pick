@@ -43,7 +43,7 @@ export function YogurtBowl({clipPath = "circle(30% at 50% 50%)", toppings, selec
             key={selectedTopping.id}
             src={selectedTopping.image}
             alt={selectedTopping.name}
-            className="w-13 h-13 object-contain"
+            className="object-contain w-[70px] h-[70px] z-50"
             style={{
               position: "fixed",
               left: `${mousePos.x - 10}px`, // 커서 왼쪽으로 10px
@@ -59,7 +59,7 @@ export function YogurtBowl({clipPath = "circle(30% at 50% 50%)", toppings, selec
           key={img.id}
           src={img.image}
           alt="배치된 토핑"
-          className="fixed w-[60px] h-[60px] object-contain pointer-events-none scale-100"
+          className="fixed w-[70px] h-[70px] object-contain pointer-events-none scale-100"
           style={{
             left: `${img.x}px`,
             top: `${img.y}px`,
