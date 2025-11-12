@@ -2,22 +2,20 @@ import {useState} from "react";
 import "./App.css";
 import {ToppingSelector} from "./components/ToppingSelector";
 import {YogurtBowl} from "./components/YogurtBowl";
-import strawberry from "../public/images/toppings/strawberry.png";
+import type {Topping} from "./types/Topping";
 
 function App() {
-  const [isSelectd, setIsSelectd] = useState<boolean>(false);
-  const [toppingImage, setToppingImage] = useState<string>(strawberry);
+  const [selectedTopping, setSelectedTopping] = useState<Topping | null>(null);
 
-  const onToppingSelect = (image: string) => {
-    setIsSelectd(true);
-    setToppingImage(image);
+  const onToppingSelect = (topping: Topping) => {
+    setSelectedTopping(topping);
   };
 
   return (
-    <>
+    <div className="z-0">
       <ToppingSelector onToppingSelect={onToppingSelect} />
-      <YogurtBowl isSelectd={isSelectd} toppingImage={toppingImage} />
-    </>
+      <YogurtBowl selectedTopping={selectedTopping} />
+    </div>
   );
 }
 
