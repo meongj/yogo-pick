@@ -1,13 +1,17 @@
-import {useCallback, useRef} from "react";
+import {useCallback, useEffect, useRef} from "react";
 
 export const useSound = (soundFile: string) => {
   // Audio 객체를 저장할 ref 생성
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // 처음 한번만 Audio 객체 생성
-  if (!audioRef.current) {
+  useEffect(() => {
     audioRef.current = new Audio(soundFile);
-  }
+    return () => {
+      audioRef.current?.pause();
+      audioRef.current = null;
+    };
+  }, [soundFile]);
 
   // 재생 함수을 메모이제이션
   const play = useCallback(() => {

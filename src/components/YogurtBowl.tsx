@@ -16,11 +16,11 @@ export function YogurtBowl({selectedTopping}: YogurtBowlProps) {
   // 클릭한 위치와 어떤 이미지 인지
   const [placedImages, setPlacedImages] = useState<{x: number; y: number; id: string; image: string}[]>([]);
 
-  const playHover = useSound(pop);
+  const playPlaceSound = useSound(pop);
 
   // 마우스무브 이벤트리스너 추가
   useEffect(() => {
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: MouseEvent) => {
       setMousePos({x: e.clientX, y: e.clientY});
     };
 
@@ -38,7 +38,7 @@ export function YogurtBowl({selectedTopping}: YogurtBowlProps) {
       {x: e.clientX, y: e.clientY, id: crypto.randomUUID(), image: selectedTopping.image},
     ]);
 
-    playHover();
+    playPlaceSound();
   };
 
   return (
@@ -49,7 +49,7 @@ export function YogurtBowl({selectedTopping}: YogurtBowlProps) {
         className="pointer-events-none w-full h-screen object-contain -translate-y-7"
       />
       <div
-        className="absolute inset-0 cursor-pointe"
+        className="absolute inset-0 cursor-pointer"
         style={{clipPath: "circle(23% at 50% 46%)"}}
         onClick={handleClick}
       />

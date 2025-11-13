@@ -29,11 +29,11 @@ const toppings = [
 export function ToppingSelector({onToppingSelect}: ToppingSelectorProps) {
   const [hoverTopping, setHoverTopping] = useState<string>(""); // id
 
-  const playHover = useSound(hover);
+  const playSelectSound = useSound(hover);
 
   const handleSelect = (topping: Topping) => {
     onToppingSelect(topping);
-    playHover();
+    playSelectSound();
   };
 
   return (
