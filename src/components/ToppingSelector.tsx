@@ -32,11 +32,13 @@ export function ToppingSelector({onToppingSelect}: ToppingSelectorProps) {
   };
 
   return (
-    <div className="flex flex-row gap-1 px-1 z-50 relative" aria-label="토핑 선택">
+    <div
+      className="flex flex-row gap-1 px-1 z-50 relative overflow-x-auto overflow-y-hidden flex-nowrap w-full"
+      aria-label="토핑 선택">
       {toppings.map((topping) => (
         <div
           key={topping.id}
-          className={`flex flex-col items-center p-2 rounded-lg relative ${hoverTopping === topping.id ? "scale-120" : "scale-100"}`}
+          className={`flex flex-col items-center p-2 rounded-lg relative flex-shrink-0 min-w-[80px] ${hoverTopping === topping.id ? "scale-120" : "scale-100"}`}
           onMouseEnter={() => {
             setHoverTopping(topping.id);
           }}

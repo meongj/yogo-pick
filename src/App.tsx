@@ -12,7 +12,7 @@ function App() {
   };
 
   return (
-    <div className="z-0">
+    <div className="z-0 w-screen overflow-x-hidden">
       <ToppingSelector onToppingSelect={onToppingSelect} />
       <YogurtBowl selectedTopping={selectedTopping} />
     </div>

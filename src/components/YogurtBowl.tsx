@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import yogartBowl from "../../public/images/bowl/yogartBowl.jpg";
+import yogartBowl from "../../public/images/bowl/yogartBowl.png";
 import type {Topping} from "../types/Topping";
 
 interface YogurtBowlProps {
@@ -8,7 +8,7 @@ interface YogurtBowlProps {
   selectedTopping: Topping | null;
 }
 
-export function YogurtBowl({clipPath = "circle(30% at 50% 50%)", selectedTopping}: YogurtBowlProps) {
+export function YogurtBowl({selectedTopping}: YogurtBowlProps) {
   // 마우스 위치
   const [mousePos, setMousePos] = useState({x: 0, y: 0});
   // 클릭한 위치와 어떤 이미지 인지
@@ -36,9 +36,17 @@ export function YogurtBowl({clipPath = "circle(30% at 50% 50%)", selectedTopping
   };
 
   return (
-    <div className="relative inline-block ">
-      <img src={yogartBowl} alt="Yogurt Bowl" className="pointer-events-none" />
-      <div className="absolute inset-0 cursor-pointer" style={{clipPath}} onClick={handleClick} />
+    <div className="relative w-screen h-screen overflow-hidden">
+      <img
+        src={yogartBowl}
+        alt="Yogurt Bowl"
+        className="pointer-events-none w-full h-screen object-contain -translate-y-7"
+      />
+      <div
+        className="absolute inset-0 cursor-pointe"
+        style={{clipPath: "circle(23% at 50% 46%)"}}
+        onClick={handleClick}
+      />
       <div>
         {selectedTopping && (
           <img
