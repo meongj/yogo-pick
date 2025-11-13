@@ -1,6 +1,8 @@
 import {useEffect, useState} from "react";
-import yogartBowl from "../../public/images/bowl/yogartBowl.jpg";
+import yogartBowl from "../../public/images/bowl/yogartBowl.png";
 import type {Topping} from "../types/Topping";
+import pop from "../../public/sound/pop.mp3";
+import {useSound} from "../hooks/useSound";
 
 interface YogurtBowlProps {
   // 클릭 가능한 영역을 정의하는 clip-path
@@ -8,15 +10,17 @@ interface YogurtBowlProps {
   selectedTopping: Topping | null;
 }
 
-export function YogurtBowl({clipPath = "circle(30% at 50% 50%)", selectedTopping}: YogurtBowlProps) {
+export function YogurtBowl({selectedTopping}: YogurtBowlProps) {
   // 마우스 위치
   const [mousePos, setMousePos] = useState({x: 0, y: 0});
   // 클릭한 위치와 어떤 이미지 인지
   const [placedImages, setPlacedImages] = useState<{x: number; y: number; id: string; image: string}[]>([]);
 
+  const playPlaceSound = useSound(pop);
+
   // 마우스무브 이벤트리스너 추가
   useEffect(() => {
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: MouseEvent) => {
       setMousePos({x: e.clientX, y: e.clientY});
     };
 
@@ -33,12 +37,22 @@ export function YogurtBowl({clipPath = "circle(30% at 50% 50%)", selectedTopping
       ...placedImages,
       {x: e.clientX, y: e.clientY, id: crypto.randomUUID(), image: selectedTopping.image},
     ]);
+
+    playPlaceSound();
   };
 
   return (
-    <div className="relative inline-block ">
-      <img src={yogartBowl} alt="Yogurt Bowl" className="pointer-events-none" />
-      <div className="absolute inset-0 cursor-pointer" style={{clipPath}} onClick={handleClick} />
+    <div className="relative w-screen h-screen overflow-hidden">
+      <img
+        src={yogartBowl}
+        alt="Yogurt Bowl"
+        className="pointer-events-none w-full h-screen object-contain -translate-y-7"
+      />
+      <div
+        className="absolute inset-0 cursor-pointer"
+        style={{clipPath: "circle(23% at 50% 46%)"}}
+        onClick={handleClick}
+      />
       <div>
         {selectedTopping && (
           <img
