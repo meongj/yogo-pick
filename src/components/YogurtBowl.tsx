@@ -1,6 +1,8 @@
 import {useEffect, useState} from "react";
 import yogartBowl from "../../public/images/bowl/yogartBowl.png";
 import type {Topping} from "../types/Topping";
+import pop from "../../public/sound/pop.mp3";
+import {useSound} from "../hooks/useSound";
 
 interface YogurtBowlProps {
   // 클릭 가능한 영역을 정의하는 clip-path
@@ -13,6 +15,8 @@ export function YogurtBowl({selectedTopping}: YogurtBowlProps) {
   const [mousePos, setMousePos] = useState({x: 0, y: 0});
   // 클릭한 위치와 어떤 이미지 인지
   const [placedImages, setPlacedImages] = useState<{x: number; y: number; id: string; image: string}[]>([]);
+
+  const playHover = useSound(pop);
 
   // 마우스무브 이벤트리스너 추가
   useEffect(() => {
@@ -33,6 +37,8 @@ export function YogurtBowl({selectedTopping}: YogurtBowlProps) {
       ...placedImages,
       {x: e.clientX, y: e.clientY, id: crypto.randomUUID(), image: selectedTopping.image},
     ]);
+
+    playHover();
   };
 
   return (

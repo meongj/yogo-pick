@@ -7,6 +7,8 @@ import cashew from "../../public/images/toppings/cashew.png";
 import mango from "../../public/images/toppings/mango.png";
 import {useState} from "react";
 import type {Topping} from "../types/Topping";
+import {useSound} from "../hooks/useSound";
+import hover from "../../public/sound/hover.mp3";
 
 interface ToppingSelectorProps {
   onToppingSelect: (topping: Topping) => void;
@@ -27,8 +29,11 @@ const toppings = [
 export function ToppingSelector({onToppingSelect}: ToppingSelectorProps) {
   const [hoverTopping, setHoverTopping] = useState<string>(""); // id
 
+  const playHover = useSound(hover);
+
   const handleSelect = (topping: Topping) => {
     onToppingSelect(topping);
+    playHover();
   };
 
   return (
