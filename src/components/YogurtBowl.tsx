@@ -5,12 +5,11 @@ import pop from "../../public/sound/pop.mp3";
 import {useSound} from "../hooks/useSound";
 
 interface YogurtBowlProps {
-  // 클릭 가능한 영역을 정의하는 clip-path
-  clipPath?: string;
   selectedTopping: Topping | null;
+  ref?: React.Ref<HTMLDivElement>;
 }
 
-export function YogurtBowl({selectedTopping}: YogurtBowlProps) {
+export function YogurtBowl({selectedTopping, ref}: YogurtBowlProps) {
   // 마우스 위치
   const [mousePos, setMousePos] = useState({x: 0, y: 0});
   // 클릭한 위치와 어떤 이미지 인지
@@ -42,7 +41,7 @@ export function YogurtBowl({selectedTopping}: YogurtBowlProps) {
   };
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden">
+    <div className="relative w-screen h-screen overflow-hidden" ref={ref}>
       <img
         src={yogartBowl}
         alt="Yogurt Bowl"
@@ -66,6 +65,7 @@ export function YogurtBowl({selectedTopping}: YogurtBowlProps) {
               top: `${mousePos.y - 10}px`, // 커서 위로 10px
               pointerEvents: "none", // 마우스 이벤트 차단 방지
             }}
+            data-html2canvas-ignore="true"
           />
         )}
       </div>
