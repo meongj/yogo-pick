@@ -6,9 +6,10 @@ import {api} from "../../convex/_generated/api";
 
 interface CaptureButtonProps {
   ref: RefObject<HTMLDivElement | null>;
+  onClick?: () => void;
 }
 
-export function CaptureButton({ref}: CaptureButtonProps) {
+export function CaptureButton({ref, onClick}: CaptureButtonProps) {
   const generateUploadUrl = useMutation(api.yogurtBowls.generateUploadUrl);
   const saveYogurtBowl = useMutation(api.yogurtBowls.saveYogurtBowl);
 
@@ -52,6 +53,7 @@ export function CaptureButton({ref}: CaptureButtonProps) {
       className="fixed bottom-10 right-10 z-50 px-3 py-2 transition-all duration-300 hover:scale-105 hover:drop-shadow-2xl cursor-pointer"
       onClick={() => {
         handleClick();
+        onClick?.();
       }}>
       <img src={saveBtn} className="w-40 h-40" />
     </button>
