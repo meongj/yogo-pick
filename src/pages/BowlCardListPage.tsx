@@ -10,9 +10,11 @@ function BowlCardListPage() {
       <div className="flex justify-center items-center py-8">
         <h2 className="text-xl font-medium">My YogurtBowl</h2>
       </div>
-      <div className="grid grid-cols-2 gap-7 p-15">
+      <div className="grid grid-cols-2 gap-7 p-20">
         {files?.map((bowl) => {
-          return <BowlCard id={bowl._id} image={bowl.url} date={new Date(bowl.createdAt).toLocaleString()} />;
+          return (
+            <BowlCard key={bowl._id} id={bowl._id} image={bowl.url} date={new Date(bowl.createdAt).toLocaleString()} />
+          );
         })}
       </div>
     </div>

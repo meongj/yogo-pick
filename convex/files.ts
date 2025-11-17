@@ -11,7 +11,7 @@ export const listFiles = query({
     const bowlsWithUrls = await Promise.all(
       bowls.map(async (bowl) => ({
         ...bowl,
-        url: await ctx.storage.getUrl(bowl.imageStorageId as any),
+        url: await ctx.storage.getUrl(bowl.imageStorageId),
       }))
     );
 
