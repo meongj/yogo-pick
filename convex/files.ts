@@ -9,7 +9,11 @@ export const listFiles = query({
     paginationOpts: paginationOptsValidator,
   },
   handler: async (ctx, args) => {
-    const paginationResult = await ctx.db.query("yogurtBowls").order("desc").paginate(args.paginationOpts);
+    const paginationResult = await ctx.db
+      .query("yogurtBowls")
+      .withIndex("by_creation_time")
+      .order("desc")
+      .paginate(args.paginationOpts);
 
     // 각 bowl의 이미지 URL 가져오기
     const bowlsWithUrls = await Promise.all(
