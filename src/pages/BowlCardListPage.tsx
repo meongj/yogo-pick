@@ -3,16 +3,18 @@ import BowlCard from "../components/BowlCard";
 import {api} from "../../convex/_generated/api";
 import {useEffect, useRef} from "react";
 
+const PAGE_SIZE = 3;
+
 function BowlCardListPage() {
   const observerRef = useRef<HTMLDivElement>(null);
-  const {results, status, loadMore} = usePaginatedQuery(api.files.listFiles, {}, {initialNumItems: 2});
+  const {results, status, loadMore} = usePaginatedQuery(api.files.listFiles, {}, {initialNumItems: PAGE_SIZE});
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && status === "CanLoadMore") {
           // 데이터 로드
-          loadMore(2);
+          loadMore(PAGE_SIZE);
         }
       },
       {
@@ -27,8 +29,12 @@ function BowlCardListPage() {
 
     // cleanup
     return () => observer.disconnect();
-  });
+  }, [status, loadMore]);
 
+  // 첫 페이지 로딩시
+  if (status === "LoadingFirstPage") {
+    return <div className="col-span-2 text-center py-10 text-gray-500">로딩중..</div>;
+  }
   if (results.length === 0) {
     return <div className="col-span-2 text-center py-10 text-gray-500">저장된 요거트볼이 없습니다</div>;
   }
@@ -46,7 +52,7 @@ function BowlCardListPage() {
         })}
         {status === "LoadingMore" && <div className="col-span-2 text-center py-10">로딩 중...</div>}
       </div>
-      <div ref={observerRef} className="h-1 " />
+      <div ref={observerRef} aria-hidden="true" />
     </div>
   );
 }
