@@ -1,4 +1,21 @@
 @import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+.pixel-font {
+  font-family: "Press Start 2P", cursive;
+}
+
+@font-face {
+  font-family: "RoundedFixedsys";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff") format("woff");
+  font-weight: normal;
+  font-display: swap;
+}
+
+* {
+  /* 영어: Press Start 2P, 한글 :  RoundedFixedsys 폰트 적용 */
+  font-family: "Press Start 2P", "RoundedFixedsys", sans-serif;
+}
+
 html,
 body {
   margin: 0;
@@ -12,4 +29,26 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
+}
+
+/* 픽셀 아트 CSS */
+
+@layer components {
+  .pixel-shadow {
+    @apply shadow-[6px_6px_0px_0px_#000];
+  }
+  .pixel-border {
+    box-shadow:
+      4px 0 0 0 #000,
+      -4px 0 0 0 #000,
+      0 4px 0 0 #000,
+      0 -4px 0 0 #000,
+      4px 4px 0 0 #000,
+      -4px -4px 0 0 #000,
+      4px -4px 0 0 #000,
+      -4px 4px 0 0 #000;
+  }
+  .pixel-button {
+    @apply pixel-shadow border-2 border-black bg-white hover:bg-gray-100;
+  }
 }
