@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { mutation } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 
 // Storage 업로드 URL 생성
 export const generateUploadUrl = mutation(async (ctx) => {
@@ -27,5 +27,36 @@ export const saveYogurtBowl = mutation({
       createdAt: date,
     });
     return yogurtBowlId;
+  },
+});
+
+// 요거트볼 상세데이터 조회
+export const getYogurtBowlDetail = query({
+  args: { id: v.id("yogurtBowls") },
+  handler: async (ctx, args) => {
+    const bowl = await ctx.db.get(args.id);
+    if (!bowl) {
+      return null;
+    }
+
+    // 이미지 URL 가져오기
+    const imageUrl = await ctx.storage.getUrl(bowl.imageStorageId);
+
+    return {
+      ...bowl,
+      imageUrl,
+    };
+  },
+});
+
+// 개발용: 모든 요거트볼 데이터 삭제
+export const deleteAllYogurtBowls = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const allBowls = await ctx.db.query("yogurtBowls").collect();
+    for (const bowl of allBowls) {
+      await ctx.db.delete(bowl._id);
+    }
+    return { deleted: allBowls.length };
   },
 });
