@@ -6,7 +6,7 @@ import deleteIcon from "../../public/images/icons/deleteIcon.svg";
 import previousIcon from "../../public/images/icons/previousIcon.svg";
 
 import { useNavigate, useParams } from "react-router-dom";
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { useEffect, useRef, useState } from "react";
@@ -22,6 +22,7 @@ function BowlDetailPage() {
   const [editedTitle, setEditedTitle] = useState("");
   const [editedDescription, setEditedDescription] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const updateYogurtBowl = useMutation(api.yogurtBowls.updateYogurtBowlTitle);
 
   // 초기값 설정
   useEffect(() => {
@@ -38,9 +39,25 @@ function BowlDetailPage() {
     }
   }, [isEditing]);
 
-  const handleEdit = () => {
-    console.log("수정");
-    setIsEditing(!isEditing);
+  const handleEdit = async () => {
+    if (isEditing) {
+      // 저장 모드: API 호출
+      try {
+        await updateYogurtBowl({
+          id: id as Id<"yogurtBowls">,
+          title: editedTitle,
+          description: editedDescription,
+        });
+        alert("저장되었습니다!");
+        setIsEditing(false);
+      } catch (error) {
+        console.error("저장 실패:", error);
+        alert("저장에 실패했습니다.");
+      }
+    } else {
+      // 편집 모드로 전환
+      setIsEditing(true);
+    }
   };
 
   if (bowlDetail === undefined) {
@@ -146,9 +163,12 @@ function BowlDetailPage() {
               placeholder="설명을 입력해주세요"
             />
           ) : (
-            <p className="min-h-[100px] leading-relaxed">
-              {bowlDetail.description}
-            </p>
+            <textarea
+              value={bowlDetail.description}
+              readOnly
+              className="min-h-[100px] w-full resize-none bg-transparent outline-none cursor-default"
+              placeholder="설명이 없습니다"
+            />
           )}
         </div>
       </div>
@@ -161,7 +181,7 @@ function BowlDetailPage() {
           }}
         >
           <img src={editIcon} alt="수정 아이콘" className="h-5 w-5" />
-          <span className="text-sm text-white">EDIT</span>
+          <span className="text-sm text-white">{isEditing ? "SAVE" : "EDIT"}</span>
         </button>
 
         <button className="flex items-center gap-2 border-3 border-black bg-red-600 px-4 py-1 whitespace-nowrap shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-xl">

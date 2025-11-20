@@ -49,6 +49,21 @@ export const getYogurtBowlDetail = query({
   },
 });
 
+// 수정하기
+export const updateYogurtBowlTitle = mutation({
+  args: {
+    id: v.id("yogurtBowls"),
+    title: v.string(),
+    description: v.string(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.id, {
+      title: args.title,
+      description: args.description,
+    });
+  },
+});
+
 // 개발용: 모든 요거트볼 데이터 삭제
 export const deleteAllYogurtBowls = mutation({
   args: {},
