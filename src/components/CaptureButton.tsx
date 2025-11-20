@@ -7,10 +7,14 @@ import { api } from "../../convex/_generated/api";
 interface CaptureButtonProps {
   ref: RefObject<HTMLDivElement | null>;
   onClick?: () => void;
-  incredients: string[];
+  ingredients: string[];
 }
 
-export function CaptureButton({ ref, onClick, incredients }: CaptureButtonProps) {
+export function CaptureButton({
+  ref,
+  onClick,
+  ingredients,
+}: CaptureButtonProps) {
   const generateUploadUrl = useMutation(api.yogurtBowls.generateUploadUrl);
   const saveYogurtBowl = useMutation(api.yogurtBowls.saveYogurtBowl);
 
@@ -25,7 +29,13 @@ export function CaptureButton({ ref, onClick, incredients }: CaptureButtonProps)
       const canvas = await html2canvas(ref.current);
 
       // Blob 변환
-      const blob = await new Promise<Blob>((resolve) => canvas.toBlob((blob) => resolve(blob!)));
+      const blob = await new Promise<Blob>((resolve, reject) =>
+        canvas.toBlob((blob) => {
+          // blob null 체크
+          if (blob) resolve(blob);
+          else reject(new Error("Failed to create blob"));
+        })
+      );
 
       // 업로드 url 생성 (convex storage가 presigned URL 생성)
       const uploadUrl = await generateUploadUrl();
@@ -42,7 +52,7 @@ export function CaptureButton({ ref, onClick, incredients }: CaptureButtonProps)
       // DB 저장
       await saveYogurtBowl({
         imageStorageId: storageId,
-        ingredients: incredients,
+        ingredients: ingredients,
       });
 
       alert("저장이 완료되었습니다");

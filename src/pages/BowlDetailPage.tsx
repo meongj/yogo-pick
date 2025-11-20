@@ -84,6 +84,7 @@ function BowlDetailPage() {
           onClick={() => {
             navigate(-1);
           }}
+          aria-label="이전 버튼"
         >
           <img src={previousIcon} alt="이전 아이콘" />
           <span className="text-sm">BACK</span>
@@ -155,21 +156,17 @@ function BowlDetailPage() {
         </div>
 
         <div className="border-3 bg-gray-200 p-3 shadow-md">
-          {isEditing ? (
-            <textarea
-              value={editedDescription}
-              onChange={(e) => setEditedDescription(e.target.value)}
-              className="min-h-[100px] w-full resize-none bg-transparent outline-none focus:bg-gray-200 focus:ring-2 focus:ring-gray-200 focus:outline-none"
-              placeholder="설명을 입력해주세요"
-            />
-          ) : (
-            <textarea
-              value={bowlDetail.description}
-              readOnly
-              className="min-h-[100px] w-full resize-none bg-transparent outline-none cursor-default"
-              placeholder="설명이 없습니다"
-            />
-          )}
+          <textarea
+            value={isEditing ? editedDescription : bowlDetail.description}
+            onChange={
+              isEditing
+                ? (e) => setEditedDescription(e.target.value)
+                : undefined
+            }
+            readOnly={!isEditing}
+            className="min-h-[100px] w-full resize-none bg-transparent outline-none focus:bg-gray-200 focus:ring-2 focus:ring-gray-200 focus:outline-none"
+            placeholder="설명을 입력해주세요"
+          />
         </div>
       </div>
 
@@ -179,12 +176,18 @@ function BowlDetailPage() {
           onClick={() => {
             handleEdit();
           }}
+          aria-label="수정 버튼"
         >
           <img src={editIcon} alt="수정 아이콘" className="h-5 w-5" />
-          <span className="text-sm text-white">{isEditing ? "SAVE" : "EDIT"}</span>
+          <span className="text-sm text-white">
+            {isEditing ? "SAVE" : "EDIT"}
+          </span>
         </button>
 
-        <button className="flex items-center gap-2 border-3 border-black bg-red-600 px-4 py-1 whitespace-nowrap shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-xl">
+        <button
+          className="flex items-center gap-2 border-3 border-black bg-red-600 px-4 py-1 whitespace-nowrap shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-xl"
+          aria-label="삭제 버튼"
+        >
           <img src={deleteIcon} alt="삭제 아이콘" className="h-5 w-5" />
           <span className="text-sm text-white">DELETE</span>
         </button>

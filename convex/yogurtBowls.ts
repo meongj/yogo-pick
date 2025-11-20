@@ -39,6 +39,12 @@ export const getYogurtBowlDetail = query({
       return null;
     }
 
+    if (!bowl.imageStorageId) {
+      return {
+        ...bowl,
+        imageUrl: null,
+      };
+    }
     // 이미지 URL 가져오기
     const imageUrl = await ctx.storage.getUrl(bowl.imageStorageId);
 
