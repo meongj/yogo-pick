@@ -18,6 +18,22 @@ function BowlDetailPage() {
 
   console.log("bowlDetail", bowlDetail);
 
+  if (bowlDetail === undefined) {
+    return (
+      <div className="mx-auto h-screen max-w-md overflow-y-auto bg-amber-50 px-18 py-10">
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  if (bowlDetail === null) {
+    return (
+      <div className="mx-auto h-screen max-w-md overflow-y-auto bg-amber-50 px-18 py-10">
+        <p>해당 요거트 볼을 찾을 수 없습니다.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto h-screen max-w-md overflow-y-auto bg-amber-50 px-18 py-10">
       <div className="pb-5">
@@ -28,16 +44,14 @@ function BowlDetailPage() {
       </div>
 
       <div className="flex items-center justify-center pb-5">
-        <image alt="요거트볼 이미지">
-          <div className="h-[300px] w-[300px] bg-neutral-400"></div>
-        </image>
+        {bowlDetail.imageUrl ? <img src={bowlDetail.imageUrl} alt="요거트볼 이미지" className="h-[300px] w-[300px] object-cover" /> : <div className="h-[300px] w-[300px] bg-neutral-400"></div>}
       </div>
 
       <div className="mb-8 flex flex-col">
-        <h1 className="pb-2 text-xl">요거트볼 이미지 제목</h1>
+        <h1 className="pb-2 text-xl">{bowlDetail.title}</h1>
         <div className="flex items-center gap-2">
           <img src={calendarIcon} alt="달력 아이콘" />
-          <span className="text-sm">2025.11.19</span>
+          <span className="text-sm">{bowlDetail.createdAt}</span>
         </div>
       </div>
 
@@ -47,10 +61,15 @@ function BowlDetailPage() {
           <span className="font-medium">INGREDIENTS</span>
         </div>
         <div className="flex gap-1">
-          <span className="rounded-full border-3 border-gray-300 bg-gray-200 px-3 py-1 text-sm shadow">딸기</span>
-          <span className="rounded-full border-3 border-gray-300 bg-gray-200 px-3 py-1 text-sm shadow">블루베리</span>
-          <span className="rounded-full border-3 border-gray-300 bg-gray-200 px-3 py-1 text-sm shadow">망고</span>
-          <span className="rounded-full border-3 border-gray-300 bg-gray-200 px-3 py-1 text-sm shadow">그래놀라</span>
+          {bowlDetail.ingredients.length === 0 ? (
+            <span className="rounded-full border-3 border-gray-300 bg-gray-200 px-3 py-1 text-sm shadow">NONE</span>
+          ) : (
+            bowlDetail.ingredients.map((topping, index) => (
+              <span key={index} className="rounded-full border-3 border-gray-300 bg-gray-200 px-3 py-1 text-sm shadow">
+                {topping}
+              </span>
+            ))
+          )}
         </div>
       </div>
 
@@ -60,7 +79,7 @@ function BowlDetailPage() {
           <span className="font-medium">INFO</span>
         </div>
         <div className="border-3 bg-gray-200 p-3 shadow-md">
-          <p className="leading-relaxed">요거트 볼에 대한 설명입니다. 요거트 볼에 대한 설명입니다. 요거트 볼에 대한 설명입니다. 요거트 볼에 대한 설명입니다. ...</p>
+          <p className="leading-relaxed">{bowlDetail.description}</p>
         </div>
       </div>
 
