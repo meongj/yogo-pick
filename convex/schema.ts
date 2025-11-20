@@ -4,6 +4,9 @@ import {v} from "convex/values";
 export default defineSchema({
   yogurtBowls: defineTable({
     imageStorageId: v.string(), // Convex Storage ID
-    createdAt: v.number(), // timestamp
+    title: v.string(),
+    ingredients: v.array(v.string()),
+    description: v.string(),
+    createdAt: v.string(), // YYYY.MM.DD 형식
   }),
 });
