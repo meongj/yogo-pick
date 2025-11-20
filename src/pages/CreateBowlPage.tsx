@@ -1,14 +1,13 @@
-import {useRef, useState} from "react";
-import {ToppingSelector} from "../components/ToppingSelector";
-import {YogurtBowl} from "../components/YogurtBowl";
-import type {Topping} from "../types/Topping";
-import {CaptureButton} from "../components/CaptureButton";
-import {useQuery} from "convex/react";
-import {api} from "../../convex/_generated/api";
-import {useNavigate} from "react-router-dom";
+import { useRef, useState } from "react";
+import { ToppingSelector } from "../components/ToppingSelector";
+import { YogurtBowl } from "../components/YogurtBowl";
+import type { Topping } from "../types/Topping";
+import { CaptureButton } from "../components/CaptureButton";
+import { useNavigate } from "react-router-dom";
 
 function CreateBowlPage() {
   const [selectedTopping, setSelectedTopping] = useState<Topping | null>(null);
+  const [toppingNames, setToppingNames] = useState<string[]>([]);
   const captureRef = useRef<HTMLDivElement>(null);
 
   const navigate = useNavigate();
@@ -17,11 +16,28 @@ function CreateBowlPage() {
     setSelectedTopping(topping);
   };
 
+  const handleToppingPlaced = (name: string) => {
+    setToppingNames((prev) => {
+      if (prev.includes(name)) {
+        return prev;
+      }
+      return [...prev, name];
+    });
+  };
+
   return (
     <div className="z-0 w-screen overflow-x-hidden">
       <ToppingSelector onToppingSelect={onToppingSelect} />
-      <YogurtBowl selectedTopping={selectedTopping} ref={captureRef} />
-      <CaptureButton ref={captureRef} onClick={() => navigate("/album")} />
+      <YogurtBowl
+        selectedTopping={selectedTopping}
+        ref={captureRef}
+        onToppingPlaced={handleToppingPlaced}
+      />
+      <CaptureButton
+        ref={captureRef}
+        onClick={() => navigate("/album")}
+        ingredients={toppingNames}
+      />
     </div>
   );
 }

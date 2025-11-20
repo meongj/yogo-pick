@@ -49,6 +49,11 @@ body {
       -4px 4px 0 0 #000;
   }
   .pixel-button {
-    @apply pixel-shadow border-2 border-black bg-white hover:bg-gray-100;
+    box-shadow: 6px 6px 0px 0px #000;
+    border: 2px solid black;
+    background-color: white;
+  }
+  .pixel-button:hover {
+    background-color: #f3f4f6;
   }
 }

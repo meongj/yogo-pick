@@ -1,26 +1,27 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import yogartBowl from "../../public/images/bowl/yogartBowl.png";
-import type {Topping} from "../types/Topping";
+import type { Topping } from "../types/Topping";
 import pop from "../../public/sound/pop.mp3";
-import {useSound} from "../hooks/useSound";
+import { useSound } from "../hooks/useSound";
 
 interface YogurtBowlProps {
   selectedTopping: Topping | null;
+  onToppingPlaced?: (name: string) => void;
   ref?: React.Ref<HTMLDivElement>;
 }
 
-export function YogurtBowl({selectedTopping, ref}: YogurtBowlProps) {
+export function YogurtBowl({ selectedTopping, onToppingPlaced, ref }: YogurtBowlProps) {
   // 마우스 위치
-  const [mousePos, setMousePos] = useState({x: 0, y: 0});
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   // 클릭한 위치와 어떤 이미지 인지
-  const [placedImages, setPlacedImages] = useState<{x: number; y: number; id: string; image: string}[]>([]);
+  const [placedImages, setPlacedImages] = useState<{ x: number; y: number; id: string; image: string; name: string }[]>([]);
 
   const playPlaceSound = useSound(pop);
 
   // 마우스무브 이벤트리스너 추가
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePos({x: e.clientX, y: e.clientY});
+      setMousePos({ x: e.clientX, y: e.clientY });
     };
 
     window.addEventListener("mousemove", handleMouseMove);
@@ -32,33 +33,23 @@ export function YogurtBowl({selectedTopping, ref}: YogurtBowlProps) {
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!selectedTopping) return; // null 체크
-    setPlacedImages([
-      ...placedImages,
-      {x: e.clientX, y: e.clientY, id: crypto.randomUUID(), image: selectedTopping.image},
-    ]);
+    setPlacedImages([...placedImages, { x: e.clientX, y: e.clientY, id: crypto.randomUUID(), image: selectedTopping.image, name: selectedTopping.name }]);
+    onToppingPlaced?.(selectedTopping.name);
 
     playPlaceSound();
   };
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden" ref={ref}>
-      <img
-        src={yogartBowl}
-        alt="Yogurt Bowl"
-        className="pointer-events-none w-full h-screen object-contain -translate-y-7"
-      />
-      <div
-        className="absolute inset-0 cursor-pointer"
-        style={{clipPath: "circle(23% at 50% 46%)"}}
-        onClick={handleClick}
-      />
+    <div className="relative h-screen w-screen overflow-hidden" ref={ref}>
+      <img src={yogartBowl} alt="Yogurt Bowl" className="pointer-events-none h-screen w-full -translate-y-7 object-contain" />
+      <div className="absolute inset-0 cursor-pointer" style={{ clipPath: "circle(23% at 50% 46%)" }} onClick={handleClick} />
       <div>
         {selectedTopping && (
           <img
             key={selectedTopping.id}
             src={selectedTopping.image}
             alt={selectedTopping.name}
-            className="object-contain w-[70px] h-[70px] z-50"
+            className="z-50 h-[70px] w-[70px] object-contain"
             style={{
               position: "fixed",
               left: `${mousePos.x - 10}px`, // 커서 왼쪽으로 10px
@@ -75,7 +66,7 @@ export function YogurtBowl({selectedTopping, ref}: YogurtBowlProps) {
           key={img.id}
           src={img.image}
           alt="배치된 토핑"
-          className="fixed w-[70px] h-[70px] object-contain pointer-events-none scale-100"
+          className="pointer-events-none fixed h-[70px] w-[70px] scale-100 object-contain"
           style={{
             left: `${img.x}px`,
             top: `${img.y}px`,
