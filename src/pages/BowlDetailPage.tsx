@@ -4,6 +4,7 @@ import descriptionIcon from "../../public/images/icons/descriptionIcon.svg";
 import editIcon from "../../public/images/icons/editIcon.svg";
 import deleteIcon from "../../public/images/icons/deleteIcon.svg";
 import previousIcon from "../../public/images/icons/previousIcon.svg";
+import trashIcon from "../../public/images/icons/trashIcon.svg";
 
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery } from "convex/react";
@@ -60,6 +61,11 @@ function BowlDetailPage() {
       // 편집 모드로 전환
       setIsEditing(true);
     }
+  };
+
+  // 삭제 모달
+  const handleDelete = () => {
+    console.log("삭제클릭");
   };
 
   if (bowlDetail === undefined) {
@@ -194,10 +200,31 @@ function BowlDetailPage() {
             className="flex items-center gap-2 border-3 border-black bg-red-600 px-4 py-1 whitespace-nowrap shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-xl"
             aria-label="삭제 버튼"
             type="button"
+            onClick={handleDelete}
           >
             <img src={deleteIcon} alt="삭제 아이콘" className="h-5 w-5" />
             <span className="text-sm text-white">DELETE</span>
           </button>
+        </div>
+      </div>
+
+      {/* 삭제 모달 */}
+      <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+        <div className="w-sm rounded-lg bg-white p-7">
+          <div className="flex items-center justify-center pb-10">
+            <img src={trashIcon} alt="삭제 아이콘" />
+          </div>
+          <div className="flex items-center justify-center pb-10 text-xl">
+            <h3> 요거트 볼을 삭제하시겠어요?</h3>
+          </div>
+          <div className="flex items-center justify-center gap-6">
+            <button className="flex cursor-pointer items-center gap-2 border-3 border-black bg-red-600 px-4 py-1 whitespace-nowrap shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-xl">
+              네
+            </button>
+            <button className="flex cursor-pointer items-center gap-2 border-3 border-black bg-gray-400 px-4 py-1 whitespace-nowrap shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-xl">
+              아니오
+            </button>
+          </div>
         </div>
       </div>
     </form>
