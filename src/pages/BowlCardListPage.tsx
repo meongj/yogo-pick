@@ -58,7 +58,7 @@ function BowlCardListPage() {
       <Navbar />
 
       <div className="flex items-center justify-center py-8">
-        <h2 className="text-xl font-medium">My YogurtBowl</h2>
+        <h2 className="text-2xl font-medium">My YogurtBowl</h2>
       </div>
       <div className="grid grid-cols-2 gap-7 p-20 pt-10">
         {results?.map((bowl) => {
