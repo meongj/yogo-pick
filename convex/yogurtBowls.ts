@@ -73,6 +73,10 @@ export const updateYogurtBowlTitle = mutation({
 export const deleteYogurtBowl = mutation({
   args: { id: v.id("yogurtBowls") },
   handler: async (ctx, args) => {
+    const bowl = await ctx.db.get(args.id);
+    if (bowl?.imageStorageId) {
+      await ctx.storage.delete(bowl.imageStorageId);
+    }
     await ctx.db.delete(args.id);
   },
 });

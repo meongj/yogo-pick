@@ -78,6 +78,7 @@ function BowlDetailPage() {
     } catch (err) {
       console.error("Network or server error:", err);
       alert("네트워크 오류가 발생했어요. 다시 시도해주세요!");
+      navigate("/album");
     }
   };
 
@@ -230,6 +231,9 @@ function BowlDetailPage() {
           onClick={() => setIsDeleteModalOpen(false)}
         >
           <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-text"
             className="w-sm border-3 bg-white p-7 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
@@ -237,7 +241,7 @@ function BowlDetailPage() {
               <img src={trashIcon} alt="삭제 아이콘" />
             </div>
             <div className="flex items-center justify-center pb-10 text-xl">
-              <h3> 요거트 볼을 삭제하시겠어요?</h3>
+              <h3 id="modal-text"> 요거트 볼을 삭제하시겠어요?</h3>
             </div>
             <div className="flex items-center justify-center gap-6">
               <button
