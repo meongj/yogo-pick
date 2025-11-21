@@ -120,7 +120,7 @@ function BowlDetailPage() {
             <img
               src={bowlDetail.imageUrl}
               alt="요거트볼 이미지"
-              className="h-[300px] w-[300px] object-cover"
+              className="h-[300px] w-[300px] border-3 object-cover"
             />
           ) : (
             <div className="h-[300px] w-[300px] bg-neutral-400"></div>
