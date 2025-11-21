@@ -12,12 +12,19 @@ function Navbar() {
   ];
 
   return (
-    <nav className="align-center m-6 flex justify-center border-3 p-2 shadow-xl">
+    <nav
+      className="align-center m-6 flex justify-center border-3 p-2 shadow-xl"
+      aria-label="상단 네비게이션"
+    >
       {menus.map((menu, index) => (
-        <div key={index} className="flex">
+        <div key={menu.name} className="flex">
           {index > 0 && <div className="mx-2">|</div>}
           {currentPath === menu.path ? (
-            <Link to={menu.path} className="cursor-pointer font-bold underline">
+            <Link
+              to={menu.path}
+              className="cursor-pointer font-bold underline"
+              aria-current="page"
+            >
               {menu.name}
             </Link>
           ) : (
