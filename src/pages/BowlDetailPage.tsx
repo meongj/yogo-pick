@@ -24,6 +24,10 @@ function BowlDetailPage() {
   const [editedDescription, setEditedDescription] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const updateYogurtBowl = useMutation(api.yogurtBowls.updateYogurtBowlTitle);
+  //삭제 모달 열렸는지 여부
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const deleteYogurtBowl = useMutation(api.yogurtBowls.deleteYogurtBowl);
 
   // 초기값 설정
   useEffect(() => {
@@ -64,8 +68,17 @@ function BowlDetailPage() {
   };
 
   // 삭제 모달
-  const handleDelete = () => {
-    console.log("삭제클릭");
+
+  const handleDelete = async () => {
+    try {
+      await deleteYogurtBowl({ id: id as Id<"yogurtBowls"> });
+      alert("삭제 되었습니다");
+      setIsDeleteModalOpen(false);
+      navigate("/album");
+    } catch (err) {
+      console.error("Network or server error:", err);
+      alert("네트워크 오류가 발생했어요. 다시 시도해주세요!");
+    }
   };
 
   if (bowlDetail === undefined) {
@@ -197,10 +210,12 @@ function BowlDetailPage() {
           </button>
 
           <button
-            className="flex items-center gap-2 border-3 border-black bg-red-600 px-4 py-1 whitespace-nowrap shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-xl"
+            className="flex cursor-pointer items-center gap-2 border-3 border-black bg-red-600 px-4 py-1 whitespace-nowrap shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-xl"
             aria-label="삭제 버튼"
             type="button"
-            onClick={handleDelete}
+            onClick={() => {
+              setIsDeleteModalOpen(true);
+            }}
           >
             <img src={deleteIcon} alt="삭제 아이콘" className="h-5 w-5" />
             <span className="text-sm text-white">DELETE</span>
@@ -209,24 +224,40 @@ function BowlDetailPage() {
       </div>
 
       {/* 삭제 모달 */}
-      <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-        <div className="w-sm rounded-lg bg-white p-7">
-          <div className="flex items-center justify-center pb-10">
-            <img src={trashIcon} alt="삭제 아이콘" />
-          </div>
-          <div className="flex items-center justify-center pb-10 text-xl">
-            <h3> 요거트 볼을 삭제하시겠어요?</h3>
-          </div>
-          <div className="flex items-center justify-center gap-6">
-            <button className="flex cursor-pointer items-center gap-2 border-3 border-black bg-red-600 px-4 py-1 whitespace-nowrap shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-xl">
-              네
-            </button>
-            <button className="flex cursor-pointer items-center gap-2 border-3 border-black bg-gray-400 px-4 py-1 whitespace-nowrap shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-xl">
-              아니오
-            </button>
+      {isDeleteModalOpen && (
+        <div
+          className="absolute inset-0 flex items-center justify-center bg-black/50"
+          onClick={() => setIsDeleteModalOpen(false)}
+        >
+          <div
+            className="w-sm border-3 bg-white p-7 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-center pb-10">
+              <img src={trashIcon} alt="삭제 아이콘" />
+            </div>
+            <div className="flex items-center justify-center pb-10 text-xl">
+              <h3> 요거트 볼을 삭제하시겠어요?</h3>
+            </div>
+            <div className="flex items-center justify-center gap-6">
+              <button
+                className="flex cursor-pointer items-center gap-2 border-3 border-black bg-red-600 px-4 py-1 whitespace-nowrap shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-xl"
+                onClick={handleDelete}
+                type="button"
+              >
+                네
+              </button>
+              <button
+                className="flex cursor-pointer items-center gap-2 border-3 border-black bg-gray-400 px-4 py-1 whitespace-nowrap shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-xl"
+                type="button"
+                onClick={() => setIsDeleteModalOpen(false)}
+              >
+                아니오
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </form>
   );
 }

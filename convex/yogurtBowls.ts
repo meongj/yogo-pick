@@ -70,6 +70,13 @@ export const updateYogurtBowlTitle = mutation({
   },
 });
 
+export const deleteYogurtBowl = mutation({
+  args: { id: v.id("yogurtBowls") },
+  handler: async (ctx, args) => {
+    await ctx.db.delete(args.id);
+  },
+});
+
 // 개발용: 모든 요거트볼 데이터 삭제
 export const deleteAllYogurtBowls = mutation({
   args: {},
