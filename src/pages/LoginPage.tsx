@@ -3,6 +3,7 @@ import googleIcon from "../../public/images/icons/google.svg";
 import { useForm } from "react-hook-form";
 import { useAction } from "convex/react";
 import { api } from "../../convex/_generated/api";
+import { useNavigate } from "react-router-dom";
 
 interface LoginFormData {
   email: string;
@@ -17,6 +18,7 @@ function LoginPage() {
   } = useForm<LoginFormData>({ mode: "onBlur" });
 
   const login = useAction(api.users.login);
+  const navigate = useNavigate();
 
   const onSubmit = async (data: LoginFormData) => {
     try {
@@ -73,7 +75,7 @@ function LoginPage() {
               <button type="submit" className="mt-2 flex cursor-pointer items-center justify-center border-2 bg-indigo-300 p-3">
                 로그인
               </button>
-              <button className="flex cursor-pointer items-center justify-center border-2 bg-gray-100 p-3" type="button">
+              <button className="flex cursor-pointer items-center justify-center border-2 bg-gray-100 p-3" type="button" onClick={() => navigate("/register")}>
                 회원가입
               </button>
             </div>
