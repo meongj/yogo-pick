@@ -1,6 +1,6 @@
 import FormInput from "../components/FormInput";
 import { useForm } from "react-hook-form";
-import { useMutation } from "convex/react";
+import { useAction } from "convex/react";
 import { api } from "../../convex/_generated/api";
 
 interface RegisterFormData {
@@ -18,20 +18,21 @@ function RegisterPage() {
     formState: { errors },
   } = useForm<RegisterFormData>({ mode: "onBlur" });
 
-  const createUser = useMutation(api.users.createUsers);
+  const signup = useAction(api.users.signup);
 
   const onSubmit = async (data: RegisterFormData) => {
-    console.log(data);
-
     try {
-      await createUser({
+      await signup({
         email: data.email,
         password: data.password,
         nickname: data.nickname,
       });
       alert("회원가입 성공!");
-    } catch (error) {
+    } catch (error: any) {
       console.error("회원가입 실패:", error);
+      // ConvexError의 경우 data 속성에 메시지가 있음
+      const message = error?.data || error?.message || "회원가입에 실패했습니다.";
+      alert(message);
     }
   };
 
@@ -56,7 +57,7 @@ function RegisterPage() {
                 message: "올바른 이메일 형식이 아닙니다",
               },
             })}
-            error={errors.email?.message as string}
+            error={errors.email?.message}
           />
           <FormInput
             name="비밀번호"

@@ -15,5 +15,7 @@ export default defineSchema({
     passwordHash: v.string(), // 비밀번호 해시
     createdAt: v.number(), // 생성 시간 (timestamp)
     updatedAt: v.number(), // 수정 시간
-  }),
+  })
+    .index("nickname", ["nickname"])
+    .index("email", ["email"]),
 });
