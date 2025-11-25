@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { action, internalMutation } from "./_generated/server";
+import { action, internalMutation, internalQuery } from "./_generated/server";
 import { ConvexError } from "convex/values";
 import { internal } from "./_generated/api";
 import bcrypt from "bcryptjs";
@@ -11,7 +11,8 @@ export const signup = action({
     email: v.string(),
     password: v.string(),
   },
-  handler: async (ctx, { email, password, nickname }): Promise<any> => {
+  handler: async (ctx, { email, password, nickname }): Promise<string> => {
+    // 새로 생성된 id 반환
     const hashedPassword = await bcrypt.hash(password, 10);
 
     return await ctx.runMutation(internal.users.createUser, {
@@ -57,5 +58,49 @@ export const createUser = internalMutation({
       createdAt: timestamp,
       updatedAt: timestamp,
     });
+  },
+});
+
+// 로그인
+export const login = action({
+  args: {
+    email: v.string(),
+    password: v.string(),
+  },
+  handler: async (ctx, args): Promise<{ userId: string; email: string }> => {
+    // 이메일로 사용자 있는지 조회
+    const user = await ctx.runQuery(internal.users.findByEmail, {
+      email: args.email,
+    });
+
+    if (!user) {
+      throw new ConvexError("존재하지 않는 이메일입니다.");
+    }
+
+    // 비밀번호 비교
+    const isPasswordValid = await bcrypt.compare(args.password, user.passwordHash);
+
+    if (!isPasswordValid) {
+      throw new ConvexError("비밀번호가 올바르지 않습니다");
+    }
+
+    return {
+      userId: user._id,
+      email: user.email,
+    };
+  },
+});
+
+export const findByEmail = internalQuery({
+  args: {
+    email: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("email", (q) => q.eq("email", args.email))
+      .first();
+
+    return user;
   },
 });
