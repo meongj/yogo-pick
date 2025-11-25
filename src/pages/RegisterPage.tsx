@@ -1,5 +1,14 @@
 import FormInput from "../components/FormInput";
 import { useForm } from "react-hook-form";
+import { useMutation } from "convex/react";
+import { api } from "../../convex/_generated/api";
+
+interface RegisterFormData {
+  email: string;
+  password: string;
+  confirmPassword: string;
+  nickname: string;
+}
 
 function RegisterPage() {
   const {
@@ -7,10 +16,23 @@ function RegisterPage() {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm({ mode: "onBlur" });
+  } = useForm<RegisterFormData>({ mode: "onBlur" });
 
-  const onSubmit = (data) => {
+  const createUser = useMutation(api.users.createUsers);
+
+  const onSubmit = async (data: RegisterFormData) => {
     console.log(data);
+
+    try {
+      await createUser({
+        email: data.email,
+        passwordHash: data.password,
+        nickname: data.nickname,
+      });
+      alert("회원가입 성공!");
+    } catch (error) {
+      console.error("회원가입 실패:", error);
+    }
   };
 
   const password = watch("password");
@@ -94,8 +116,8 @@ function RegisterPage() {
             maxLength={20}
           />
 
-          <div className="mt-2 flex items-center justify-center border-2 bg-indigo-300 p-3">
-            <button>가입하기</button>
+          <div className="mt-2 flex cursor-pointer items-center justify-center border-2 bg-indigo-300 p-3">
+            <button type="submit">가입하기</button>
           </div>
         </div>
       </form>
