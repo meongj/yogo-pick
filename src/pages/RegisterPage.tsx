@@ -117,9 +117,12 @@ function RegisterPage() {
             maxLength={20}
           />
 
-          <div className="mt-2 flex cursor-pointer items-center justify-center border-2 bg-indigo-300 p-3">
-            <button type="submit">가입하기</button>
-          </div>
+          <button
+            type="submit"
+            className="mt-2 flex cursor-pointer items-center justify-center border-2 bg-indigo-300 p-3"
+          >
+            가입하기
+          </button>
         </div>
       </form>
     </div>
