@@ -30,7 +30,7 @@ function LoginPage() {
     } catch (error) {
       console.error("로그인 실패:", error);
       // ConvexError의 경우 data 속성에 메시지가 있음
-      const message = (error as { data?: string })?.data || (error as Error)?.message || "회원가입에 실패했습니다.";
+      const message = (error as { data?: string })?.data || (error as Error)?.message || "로그인에 실패했습니다.";
       alert(message);
     }
   };
