@@ -26,7 +26,7 @@ function RegisterPage() {
     try {
       await createUser({
         email: data.email,
-        passwordHash: data.password,
+        password: data.password,
         nickname: data.nickname,
       });
       alert("회원가입 성공!");
