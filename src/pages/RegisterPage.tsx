@@ -1,7 +1,9 @@
 import FormInput from "../components/FormInput";
 import { useForm } from "react-hook-form";
-import { useAction } from "convex/react";
-import { api } from "../../convex/_generated/api";
+import { useConvexAuth } from "convex/react";
+import { useNavigate } from "react-router-dom";
+import { useAuthActions } from "@convex-dev/auth/react";
+import { useEffect, useState } from "react";
 
 interface RegisterFormData {
   email: string;
@@ -18,21 +20,51 @@ function RegisterPage() {
     formState: { errors },
   } = useForm<RegisterFormData>({ mode: "onBlur" });
 
-  const signup = useAction(api.users.signup);
+  const navigate = useNavigate();
+  const { signIn } = useAuthActions();
+  const { isAuthenticated } = useConvexAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // 회원가입 성공 시 홈으로 이동
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
 
   const onSubmit = async (data: RegisterFormData) => {
+    setIsSubmitting(true);
     try {
-      await signup({
+      await signIn("password", {
         email: data.email,
         password: data.password,
         nickname: data.nickname,
+        flow: "signUp",
       });
       alert("회원가입 성공!");
-    } catch (error: any) {
+    } catch (error) {
       console.error("회원가입 실패:", error);
-      // ConvexError의 경우 data 속성에 메시지가 있음
-      const message = error?.data || error?.message || "회원가입에 실패했습니다.";
+
+      // 에러 메시지 추출
+      const errorMessage = (error as Error)?.message || "";
+
+      // 이미 존재하는 계정 에러 처리
+      if (errorMessage.includes("already exists")) {
+        alert("이미 사용 중인 이메일입니다. 다른 이메일을 사용해주세요.");
+        return;
+      }
+
+      // 중복 닉네임 에러 처리
+      if (errorMessage.includes("nickname") && errorMessage.includes("duplicate")) {
+        alert("이미 사용 중인 닉네임입니다. 다른 닉네임을 사용해주세요.");
+        return;
+      }
+
+      // 기타 에러
+      const message = (error as { data?: string })?.data || errorMessage || "회원가입에 실패했습니다.";
       alert(message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -119,9 +151,10 @@ function RegisterPage() {
 
           <button
             type="submit"
-            className="mt-2 flex cursor-pointer items-center justify-center border-2 bg-indigo-300 p-3"
+            disabled={isSubmitting}
+            className="mt-2 flex cursor-pointer items-center justify-center border-2 bg-indigo-300 p-3 hover:bg-indigo-400 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            가입하기
+            {isSubmitting ? "가입 중..." : "가입하기"}
           </button>
         </div>
       </form>

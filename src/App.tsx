@@ -4,6 +4,7 @@ import BowlCardListPage from "./pages/BowlCardListPage";
 import BowlDetailPage from "./pages/BowlDetailPage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
+import MyPage from "./pages/MyPage";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Route path="/detail/:id" element={<BowlDetailPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/mypage" element={<MyPage />} />
     </Routes>
   );
 }

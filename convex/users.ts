@@ -1,43 +1,28 @@
 import { v } from "convex/values";
-import { action, internalMutation, internalQuery } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import { ConvexError } from "convex/values";
-import { internal } from "./_generated/api";
-import bcrypt from "bcryptjs";
+import { getAuthUserId } from "@convex-dev/auth/server";
 
-// 회원가입
-export const signup = action({
-  args: {
-    nickname: v.string(),
-    email: v.string(),
-    password: v.string(),
-  },
-  handler: async (ctx, { email, password, nickname }): Promise<string> => {
-    // 새로 생성된 id 반환
-    const hashedPassword = await bcrypt.hash(password, 10);
+// 현재 로그인한 사용자 정보 가져오기
+export const currentUser = query({
+  args: {},
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) return null;
 
-    return await ctx.runMutation(internal.users.createUser, {
-      email: email,
-      nickname: nickname,
-      passwordHash: hashedPassword,
-    });
+    return await ctx.db.get(userId);
   },
 });
 
-// 내부 mutation: 사용자 생성
-export const createUser = internalMutation({
+// 닉네임 업데이트 (회원가입 후 또는 프로필 수정)
+export const updateNickname = mutation({
   args: {
     nickname: v.string(),
-    email: v.string(),
-    passwordHash: v.string(),
   },
-  handler: async (ctx, { email, passwordHash, nickname }) => {
-    // 이메일 중복 체크
-    const existingEmail = await ctx.db
-      .query("users")
-      .withIndex("email", (q) => q.eq("email", email))
-      .first();
-    if (existingEmail) {
-      throw new ConvexError("이미 사용 중인 이메일입니다.");
+  handler: async (ctx, { nickname }) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw new ConvexError("로그인이 필요합니다.");
     }
 
     // 닉네임 중복 체크
@@ -45,62 +30,38 @@ export const createUser = internalMutation({
       .query("users")
       .withIndex("nickname", (q) => q.eq("nickname", nickname))
       .first();
-    if (existingNickname) {
+
+    if (existingNickname && existingNickname._id !== userId) {
       throw new ConvexError("이미 사용 중인 닉네임입니다.");
     }
 
-    const timestamp = Date.now();
-
-    return await ctx.db.insert("users", {
-      email: email,
-      passwordHash: passwordHash,
-      nickname: nickname,
-      createdAt: timestamp,
-      updatedAt: timestamp,
+    await ctx.db.patch(userId, {
+      nickname,
+      updatedAt: Date.now(),
     });
   },
 });
 
-// 로그인
-export const login = action({
-  args: {
-    email: v.string(),
-    password: v.string(),
-  },
-  handler: async (ctx, args): Promise<{ userId: string; email: string }> => {
-    // 이메일로 사용자 있는지 조회
-    const user = await ctx.runQuery(internal.users.findByEmail, {
-      email: args.email,
-    });
-
-    if (!user) {
-      throw new ConvexError("존재하지 않는 이메일입니다.");
-    }
-
-    // 비밀번호 비교
-    const isPasswordValid = await bcrypt.compare(args.password, user.passwordHash);
-
-    if (!isPasswordValid) {
-      throw new ConvexError("비밀번호가 올바르지 않습니다");
-    }
-
-    return {
-      userId: user._id,
-      email: user.email,
-    };
-  },
-});
-
-export const findByEmail = internalQuery({
-  args: {
-    email: v.string(),
-  },
-  handler: async (ctx, args) => {
+// 이메일 중복 체크 (회원가입 폼에서 사용)
+export const checkEmailExists = query({
+  args: { email: v.string() },
+  handler: async (ctx, { email }) => {
     const user = await ctx.db
       .query("users")
-      .withIndex("email", (q) => q.eq("email", args.email))
+      .withIndex("email", (q) => q.eq("email", email))
       .first();
+    return !!user;
+  },
+});
 
-    return user;
+// 닉네임 중복 체크
+export const checkNicknameExists = query({
+  args: { nickname: v.string() },
+  handler: async (ctx, { nickname }) => {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("nickname", (q) => q.eq("nickname", nickname))
+      .first();
+    return !!user;
   },
 });
