@@ -1,9 +1,10 @@
 import FormInput from "../components/FormInput";
 import googleIcon from "../../public/images/icons/google.svg";
 import { useForm } from "react-hook-form";
-import { useAction } from "convex/react";
-import { api } from "../../convex/_generated/api";
+import { useConvexAuth } from "convex/react";
 import { useNavigate } from "react-router-dom";
+import { useAuthActions } from "@convex-dev/auth/react";
+import { useEffect } from "react";
 
 interface LoginFormData {
   email: string;
@@ -17,22 +18,51 @@ function LoginPage() {
     formState: { errors },
   } = useForm<LoginFormData>({ mode: "onBlur" });
 
-  const login = useAction(api.users.login);
   const navigate = useNavigate();
+  const { signIn } = useAuthActions();
+  const { isAuthenticated } = useConvexAuth();
+
+  // 로그인 성공시 home으로 이동
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      await login({
+      await signIn("password", {
         email: data.email,
         password: data.password,
+        flow: "signIn",
       });
       alert("로그인 성공!");
     } catch (error) {
       console.error("로그인 실패:", error);
-      // ConvexError의 경우 data 속성에 메시지가 있음
-      const message = (error as { data?: string })?.data || (error as Error)?.message || "로그인에 실패했습니다.";
+
+      // 에러 메시지 추출
+      const errorMessage = (error as Error)?.message || "";
+
+      // InvalidAccountId 에러 처리
+      if (errorMessage.includes("InvalidAccountId")) {
+        alert("존재하지 않는 계정입니다. 이메일을 확인해주세요.");
+        return;
+      }
+
+      // 비밀번호 불일치 에러 처리
+      if (errorMessage.includes("Invalid") || errorMessage.includes("Credentials")) {
+        alert("이메일 또는 비밀번호가 일치하지 않습니다.");
+        return;
+      }
+
+      // 기타 에러
+      const message = (error as { data?: string })?.data || errorMessage || "로그인에 실패했습니다.";
       alert(message);
     }
+  };
+
+  const handleGoogleLogin = async () => {
+    await signIn("google");
   };
 
   return (
@@ -84,7 +114,7 @@ function LoginPage() {
 
         <div className="flex flex-col items-center justify-center gap-5">
           <p className="text-xl">or</p>
-          <button className="flex w-full cursor-pointer items-center justify-center gap-1 border-2 bg-gray-100 p-3 hover:bg-gray-200" type="button">
+          <button className="flex w-full cursor-pointer items-center justify-center gap-1 border-2 bg-gray-100 p-3 hover:bg-gray-200" type="button" onClick={handleGoogleLogin}>
             <img src={googleIcon} alt="구글 아이콘" className="pointer-events-none h-5 w-5" />
             구글로 계속하기
           </button>
