@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useConvexAuth } from "convex/react";
 import { useNavigate } from "react-router-dom";
 import { useAuthActions } from "@convex-dev/auth/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface LoginFormData {
   email: string;
@@ -21,6 +21,7 @@ function LoginPage() {
   const navigate = useNavigate();
   const { signIn } = useAuthActions();
   const { isAuthenticated } = useConvexAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
   // 로그인 성공시 home으로 이동
   useEffect(() => {
@@ -30,6 +31,7 @@ function LoginPage() {
   }, [isAuthenticated, navigate]);
 
   const onSubmit = async (data: LoginFormData) => {
+    setIsLoading(true);
     try {
       await signIn("password", {
         email: data.email,
@@ -58,6 +60,8 @@ function LoginPage() {
       // 기타 에러
       const message = (error as { data?: string })?.data || errorMessage || "로그인에 실패했습니다.";
       alert(message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -102,10 +106,19 @@ function LoginPage() {
             />
 
             <div className="flex flex-col gap-3">
-              <button type="submit" className="mt-2 flex cursor-pointer items-center justify-center border-2 bg-indigo-300 p-3 hover:bg-indigo-400">
-                로그인
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="mt-2 flex cursor-pointer items-center justify-center border-2 bg-indigo-300 p-3 hover:bg-indigo-400 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {isLoading ? "로그인 중..." : "로그인"}
               </button>
-              <button className="flex cursor-pointer items-center justify-center border-2 bg-gray-100 p-3 hover:bg-gray-200" type="button" onClick={() => navigate("/register")}>
+              <button
+                className="flex cursor-pointer items-center justify-center border-2 bg-gray-100 p-3 hover:bg-gray-200"
+                type="button"
+                onClick={() => navigate("/register")}
+                disabled={isLoading}
+              >
                 회원가입
               </button>
             </div>
@@ -114,7 +127,12 @@ function LoginPage() {
 
         <div className="flex flex-col items-center justify-center gap-5">
           <p className="text-xl">or</p>
-          <button className="flex w-full cursor-pointer items-center justify-center gap-1 border-2 bg-gray-100 p-3 hover:bg-gray-200" type="button" onClick={handleGoogleLogin}>
+          <button
+            className="flex w-full cursor-pointer items-center justify-center gap-1 border-2 bg-gray-100 p-3 hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50"
+            type="button"
+            onClick={handleGoogleLogin}
+            disabled={isLoading}
+          >
             <img src={googleIcon} alt="구글 아이콘" className="pointer-events-none h-5 w-5" />
             구글로 계속하기
           </button>

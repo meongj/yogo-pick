@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useConvexAuth } from "convex/react";
 import { useNavigate } from "react-router-dom";
 import { useAuthActions } from "@convex-dev/auth/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface RegisterFormData {
   email: string;
@@ -20,10 +20,11 @@ function RegisterPage() {
     formState: { errors },
   } = useForm<RegisterFormData>({ mode: "onBlur" });
 
-  // const signup = useAction(api.users.signup);
   const navigate = useNavigate();
   const { signIn } = useAuthActions();
-  const { isAuthenticated, isLoading } = useConvexAuth();
+  const { isAuthenticated } = useConvexAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // 회원가입 성공 시 홈으로 이동
   useEffect(() => {
     if (isAuthenticated) {
@@ -32,6 +33,7 @@ function RegisterPage() {
   }, [isAuthenticated, navigate]);
 
   const onSubmit = async (data: RegisterFormData) => {
+    setIsSubmitting(true);
     try {
       await signIn("password", {
         email: data.email,
@@ -61,6 +63,8 @@ function RegisterPage() {
       // 기타 에러
       const message = (error as { data?: string })?.data || errorMessage || "회원가입에 실패했습니다.";
       alert(message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -145,8 +149,12 @@ function RegisterPage() {
             maxLength={20}
           />
 
-          <button type="submit" className="mt-2 flex cursor-pointer items-center justify-center border-2 bg-indigo-300 p-3 hover:bg-indigo-400">
-            가입하기
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="mt-2 flex cursor-pointer items-center justify-center border-2 bg-indigo-300 p-3 hover:bg-indigo-400 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {isSubmitting ? "가입 중..." : "가입하기"}
           </button>
         </div>
       </form>
