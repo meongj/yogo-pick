@@ -22,6 +22,7 @@ export const { auth, signIn, signOut, store } = convexAuth({
       profile(profile) {
         // Google OAuth 로그인 시 사용자 정보 저장
         return {
+          id: profile.sub,
           email: profile.email,
           name: profile.name,
           nickname: profile.name, // Google 이름을 닉네임으로 사용
