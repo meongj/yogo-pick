@@ -113,12 +113,7 @@ function LoginPage() {
               >
                 {isLoading ? "로그인 중..." : "로그인"}
               </button>
-              <button
-                className="flex cursor-pointer items-center justify-center border-2 bg-gray-100 p-3 hover:bg-gray-200"
-                type="button"
-                onClick={() => navigate("/register")}
-                disabled={isLoading}
-              >
+              <button className="flex cursor-pointer items-center justify-center border-2 bg-gray-100 p-3 hover:bg-gray-200" type="button" onClick={() => navigate("/register")} disabled={isLoading}>
                 회원가입
               </button>
             </div>
@@ -128,7 +123,7 @@ function LoginPage() {
         <div className="flex flex-col items-center justify-center gap-5">
           <p className="text-xl">or</p>
           <button
-            className="flex w-full cursor-pointer items-center justify-center gap-1 border-2 bg-gray-100 p-3 hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex w-full cursor-pointer items-center justify-center gap-1 border-2 bg-gray-100 p-3 hover:bg-gray-200 disabled:opacity-50"
             type="button"
             onClick={handleGoogleLogin}
             disabled={isLoading}
