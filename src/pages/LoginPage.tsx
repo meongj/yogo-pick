@@ -72,10 +72,10 @@ function LoginPage() {
             />
 
             <div className="flex flex-col gap-3">
-              <button type="submit" className="mt-2 flex cursor-pointer items-center justify-center border-2 bg-indigo-300 p-3">
+              <button type="submit" className="mt-2 flex cursor-pointer items-center justify-center border-2 bg-indigo-300 p-3 hover:bg-indigo-400">
                 로그인
               </button>
-              <button className="flex cursor-pointer items-center justify-center border-2 bg-gray-100 p-3" type="button" onClick={() => navigate("/register")}>
+              <button className="flex cursor-pointer items-center justify-center border-2 bg-gray-100 p-3 hover:bg-gray-200" type="button" onClick={() => navigate("/register")}>
                 회원가입
               </button>
             </div>
@@ -84,8 +84,8 @@ function LoginPage() {
 
         <div className="flex flex-col items-center justify-center gap-5">
           <p className="text-xl">or</p>
-          <button className="flex w-full cursor-pointer items-center justify-center gap-1 border-2 bg-gray-100 p-3" type="button">
-            <img src={googleIcon} alt="구글 아이콘" className="h-5 w-5" />
+          <button className="flex w-full cursor-pointer items-center justify-center gap-1 border-2 bg-gray-100 p-3 hover:bg-gray-200" type="button">
+            <img src={googleIcon} alt="구글 아이콘" className="pointer-events-none h-5 w-5" />
             구글로 계속하기
           </button>
         </div>
