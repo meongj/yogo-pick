@@ -1,7 +1,8 @@
-// 업로드된 모든 요거트볼 목록 가져오기
+// 로그인한 유저의 요거트볼 목록 가져오기
 
 import {paginationOptsValidator} from "convex/server";
 import {query} from "./_generated/server";
+import {getAuthUserId} from "@convex-dev/auth/server";
 
 // 이미지 리스트 조회 (페이지네이션)
 export const listFiles = query({
@@ -9,9 +10,15 @@ export const listFiles = query({
     paginationOpts: paginationOptsValidator,
   },
   handler: async (ctx, args) => {
+    // 인증 확인
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw new Error("로그인이 필요합니다.");
+    }
+
     const paginationResult = await ctx.db
       .query("yogurtBowls")
-      .withIndex("by_creation_time")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
       .order("desc")
       .paginate(args.paginationOpts);
 

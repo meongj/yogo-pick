@@ -37,7 +37,7 @@ function MyPage() {
 
           <div className="flex pt-4 pb-4">
             <div className="flex-1 text-center">
-              <div className="text-2xl font-bold">{bowlCounts ?? 0}</div>
+              <div className="text-2xl font-bold">{bowlCounts === undefined ? "..." : bowlCounts}</div>
               <div className="text-sm">만든 볼</div>
             </div>
             <div className="flex-1 text-center">
@@ -47,7 +47,11 @@ function MyPage() {
           </div>
         </div>
 
-        <button onClick={() => signOut()} className="mt-4 flex w-full cursor-pointer items-center justify-center gap-1 border-3 border-black bg-red-400 p-3 py-4 text-white hover:bg-red-500">
+        <button
+          onClick={() => signOut()}
+          className="mt-4 flex w-full cursor-pointer items-center justify-center gap-1 border-3 border-black bg-red-400 p-3 py-4 text-white hover:bg-red-500"
+          aria-label="로그아웃"
+        >
           로그아웃
         </button>
       </div>
