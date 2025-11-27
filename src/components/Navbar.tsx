@@ -6,7 +6,7 @@ function Navbar() {
 
   const menus = [
     { name: "Home", path: "/" },
-    { name: "Create", path: "/" },
+    { name: "Create", path: "/create" },
     { name: "Album", path: "/album" },
     { name: "MyPage", path: "/mypage" },
   ];

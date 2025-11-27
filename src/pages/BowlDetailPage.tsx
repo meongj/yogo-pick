@@ -7,7 +7,7 @@ import previousIcon from "../../public/images/icons/previousIcon.svg";
 import trashIcon from "../../public/images/icons/trashIcon.svg";
 
 import { useNavigate, useParams } from "react-router-dom";
-import { useMutation, useQuery } from "convex/react";
+import { useConvexAuth, useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { useEffect, useRef, useState } from "react";
@@ -28,6 +28,15 @@ function BowlDetailPage() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const deleteYogurtBowl = useMutation(api.yogurtBowls.deleteYogurtBowl);
+
+  const { isAuthenticated } = useConvexAuth();
+
+  // 로그인 안되어 있는 경우 메인 페이지로 팅겨냄
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
 
   // 초기값 설정
   useEffect(() => {
@@ -117,11 +126,7 @@ function BowlDetailPage() {
 
         <div className="flex items-center justify-center pb-5">
           {bowlDetail.imageUrl ? (
-            <img
-              src={bowlDetail.imageUrl}
-              alt="요거트볼 이미지"
-              className="h-[300px] w-[300px] border-3 object-cover"
-            />
+            <img src={bowlDetail.imageUrl} alt="요거트볼 이미지" className="h-[300px] w-[300px] border-3 object-cover" />
           ) : (
             <div className="h-[300px] w-[300px] bg-neutral-400"></div>
           )}
@@ -144,9 +149,7 @@ function BowlDetailPage() {
           )}
           <div className="flex items-center gap-2">
             <img src={calendarIcon} alt="달력 아이콘" />
-            <span className="text-l flex items-center">
-              {bowlDetail.createdAt}
-            </span>
+            <span className="text-l flex items-center">{bowlDetail.createdAt}</span>
           </div>
         </div>
 
@@ -157,15 +160,10 @@ function BowlDetailPage() {
           </div>
           <div className="flex gap-1">
             {bowlDetail.ingredients.length === 0 ? (
-              <span className="rounded-full border-3 border-gray-300 bg-gray-200 px-3 py-1 text-sm shadow">
-                NONE
-              </span>
+              <span className="rounded-full border-3 border-gray-300 bg-gray-200 px-3 py-1 text-sm shadow">NONE</span>
             ) : (
               bowlDetail.ingredients.map((topping, index) => (
-                <span
-                  key={index}
-                  className="rounded-full border-3 border-gray-300 bg-gray-200 px-3 py-1 text-sm shadow"
-                >
+                <span key={index} className="rounded-full border-3 border-gray-300 bg-gray-200 px-3 py-1 text-sm shadow">
                   {topping}
                 </span>
               ))
@@ -182,11 +180,7 @@ function BowlDetailPage() {
           <div className="border-3 bg-gray-200 p-3 shadow-md">
             <textarea
               value={isEditing ? editedDescription : bowlDetail.description}
-              onChange={
-                isEditing
-                  ? (e) => setEditedDescription(e.target.value)
-                  : undefined
-              }
+              onChange={isEditing ? (e) => setEditedDescription(e.target.value) : undefined}
               readOnly={!isEditing}
               className={
                 isEditing
@@ -205,9 +199,7 @@ function BowlDetailPage() {
             type="submit"
           >
             <img src={editIcon} alt="수정 아이콘" className="h-5 w-5" />
-            <span className="text-sm text-white">
-              {isEditing ? "SAVE" : "EDIT"}
-            </span>
+            <span className="text-sm text-white">{isEditing ? "SAVE" : "EDIT"}</span>
           </button>
 
           <button
@@ -226,17 +218,8 @@ function BowlDetailPage() {
 
       {/* 삭제 모달 */}
       {isDeleteModalOpen && (
-        <div
-          className="absolute inset-0 flex items-center justify-center bg-black/50"
-          onClick={() => setIsDeleteModalOpen(false)}
-        >
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="modal-text"
-            className="w-sm border-3 bg-white p-7 shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
+        <div className="absolute inset-0 flex items-center justify-center bg-black/50" onClick={() => setIsDeleteModalOpen(false)}>
+          <div role="dialog" aria-modal="true" aria-labelledby="modal-text" className="w-sm border-3 bg-white p-7 shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-center pb-10">
               <img src={trashIcon} alt="삭제 아이콘" />
             </div>
