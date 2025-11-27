@@ -4,6 +4,7 @@ import { api } from "../../convex/_generated/api";
 import Navbar from "../components/Navbar";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import defaultProfile from "../../public/images/image/defaultProfile.png";
 
 function MyPage() {
   const { signOut } = useAuthActions();
@@ -26,7 +27,7 @@ function MyPage() {
         <div className="mt-20 border-4 bg-gray-100 p-3">
           <div className="m-2 flex border-b border-gray-300 pb-6">
             <div className="w-1/3 border-3 p-1">
-              <img src={user?.image} alt="유저 프로필 사진" className="h-full w-full object-cover" />
+              <img src={user?.image || defaultProfile} alt="유저 프로필 사진" className="h-full w-full object-cover" />
             </div>
             <div className="flex w-2/3 flex-col items-start justify-center p-4">
               <div className="text-2xl font-bold">{user?.nickname}</div>
