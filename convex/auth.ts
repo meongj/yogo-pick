@@ -9,6 +9,7 @@ const CustomPassword = Password<DataModel>({
     return {
       email: params.email as string,
       nickname: params.nickname as string,
+      image: "/images/image/defaultProfile.png", // 기본 프로필 이미지
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
