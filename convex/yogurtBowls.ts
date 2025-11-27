@@ -71,6 +71,20 @@ export const updateYogurtBowlTitle = mutation({
     description: v.string(),
   },
   handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw new Error("로그인이 필요합니다.");
+    }
+
+    const bowl = await ctx.db.get(args.id);
+    if (!bowl) {
+      throw new Error("요거트볼을 찾을 수 없습니다.");
+    }
+
+    if (bowl.userId !== userId) {
+      throw new Error("본인의 요거트볼만 수정할 수 있습니다.");
+    }
+
     await ctx.db.patch(args.id, {
       title: args.title,
       description: args.description,
@@ -81,7 +95,20 @@ export const updateYogurtBowlTitle = mutation({
 export const deleteYogurtBowl = mutation({
   args: { id: v.id("yogurtBowls") },
   handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw new Error("로그인이 필요합니다.");
+    }
+
     const bowl = await ctx.db.get(args.id);
+    if (!bowl) {
+      throw new Error("요거트볼을 찾을 수 없습니다.");
+    }
+
+    if (bowl.userId !== userId) {
+      throw new Error("본인의 요거트볼만 삭제할 수 있습니다.");
+    }
+
     if (bowl?.imageStorageId) {
       await ctx.storage.delete(bowl.imageStorageId);
     }
