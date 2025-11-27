@@ -26,7 +26,7 @@ function CreateBowlPage() {
   };
 
   return (
-    <div className="z-0 w-screen overflow-x-hidden">
+    <div className="z-0 mx-auto h-screen max-w-md overflow-x-hidden overflow-y-hidden bg-amber-50">
       <ToppingSelector onToppingSelect={onToppingSelect} />
       <YogurtBowl selectedTopping={selectedTopping} ref={captureRef} onToppingPlaced={handleToppingPlaced} />
       <CaptureButton ref={captureRef} onClick={() => navigate("/album")} ingredients={toppingNames} />

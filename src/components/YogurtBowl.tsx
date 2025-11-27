@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import yogartBowl from "../../public/images/bowl/yogartBowl.png";
 import type { Topping } from "../types/Topping";
 import pop from "../../public/sound/pop.mp3";
@@ -14,7 +14,11 @@ export function YogurtBowl({ selectedTopping, onToppingPlaced, ref }: YogurtBowl
   // 마우스 위치
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   // 클릭한 위치와 어떤 이미지 인지
-  const [placedImages, setPlacedImages] = useState<{ x: number; y: number; id: string; image: string; name: string }[]>([]);
+  const [placedImages, setPlacedImages] = useState<{ xPercent: number; yPercent: number; id: string; image: string; name: string }[]>([]);
+
+  // 이미지 크기 상태 추가
+  const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
+  const imageRef = useRef<HTMLImageElement>(null);
 
   const playPlaceSound = useSound(pop);
 
@@ -31,48 +35,96 @@ export function YogurtBowl({ selectedTopping, onToppingPlaced, ref }: YogurtBowl
     };
   }, []);
 
+  // 이미지 로드 후 실제 렌더링 크기 계산
+  const handleImageLoad = () => {
+    if (imageRef.current) {
+      const rect = imageRef.current.getBoundingClientRect();
+      setImageSize({ width: rect.width, height: rect.height });
+    }
+  };
+
+  // 윈도우 리사이즈 시 크기 재계산
+  useEffect(() => {
+    const handleResize = () => {
+      if (imageRef.current) {
+        const rect = imageRef.current.getBoundingClientRect();
+        setImageSize({ width: rect.width, height: rect.height });
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!selectedTopping) return; // null 체크
-    setPlacedImages([...placedImages, { x: e.clientX, y: e.clientY, id: crypto.randomUUID(), image: selectedTopping.image, name: selectedTopping.name }]);
+
+    // 이미지 래퍼기준 상대 좌표(%)로 계산
+    const rect = e.currentTarget.getBoundingClientRect();
+    const xPercent = ((e.clientX - rect.left) / rect.width) * 100;
+    const yPercent = ((e.clientY - rect.top) / rect.height) * 100;
+
+    setPlacedImages([...placedImages, { xPercent, yPercent, id: crypto.randomUUID(), image: selectedTopping.image, name: selectedTopping.name }]);
     onToppingPlaced?.(selectedTopping.name);
 
     playPlaceSound();
   };
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden" ref={ref}>
-      <img src={yogartBowl} alt="Yogurt Bowl" className="pointer-events-none h-screen w-full -translate-y-7 object-contain" />
-      <div className="absolute inset-0 cursor-pointer" style={{ clipPath: "circle(23% at 50% 46%)" }} onClick={handleClick} />
-      <div>
-        {selectedTopping && (
-          <img
-            key={selectedTopping.id}
-            src={selectedTopping.image}
-            alt={selectedTopping.name}
-            className="z-50 h-[70px] w-[70px] object-contain"
-            style={{
-              position: "fixed",
-              left: `${mousePos.x - 10}px`, // 커서 왼쪽으로 10px
-              top: `${mousePos.y - 10}px`, // 커서 위로 10px
-              pointerEvents: "none", // 마우스 이벤트 차단 방지
-            }}
-            data-html2canvas-ignore="true"
-          />
-        )}
+    <div className="relative flex h-screen w-full items-center justify-center overflow-hidden">
+      {/* 이미지와 토핑을 감싸는 래퍼 - 이미지 크기에 맞춤 */}
+      <div
+        style={{
+          transform: "scale(2.0)", // 이미지 확대
+          transformOrigin: "center center",
+          marginTop: "-250px", // 위로 올리기
+        }}
+      >
+        <div
+          className="relative"
+          ref={ref} // 이 영역만 캡처
+          style={{
+            width: imageSize.width || "auto",
+            height: imageSize.height || "auto",
+          }}
+        >
+          {/* 요거트볼 이미지 */}
+          <img src={yogartBowl} alt="Yogurt Bowl" className="pointer-events-none max-w-full object-contain" onLoad={handleImageLoad} />
+
+          {/* 클릭 할 수 있는 영역(래퍼) */}
+          <div className="absolute inset-0 cursor-pointer" style={{ clipPath: "circle(26% at 50% 50%)" }} onClick={handleClick} />
+
+          {/* 배치된 토핑들(래퍼) */}
+          {placedImages.map((img) => (
+            <img
+              key={img.id}
+              src={img.image}
+              alt="배치된 토핑"
+              className="pointer-events-none absolute h-10 w-10 object-contain"
+              style={{
+                left: `calc(${img.xPercent}% - 15px)`,
+                top: `calc(${img.yPercent}% - 15px)`,
+              }}
+            />
+          ))}
+        </div>
       </div>
 
-      {placedImages.map((img) => (
+      {/* 커서에 있는 토핑 */}
+      {selectedTopping && (
         <img
-          key={img.id}
-          src={img.image}
-          alt="배치된 토핑"
-          className="pointer-events-none fixed h-[70px] w-[70px] scale-100 object-contain"
+          key={selectedTopping.id}
+          src={selectedTopping.image}
+          alt={selectedTopping.name}
+          className="z-50 h-[75px] w-[75px] object-contain"
           style={{
-            left: `${img.x}px`,
-            top: `${img.y}px`,
+            position: "fixed",
+            left: `${mousePos.x - 10}px`, // 커서 왼쪽으로 10px
+            top: `${mousePos.y - 10}px`, // 커서 위로 10px
+            pointerEvents: "none", // 마우스 이벤트 차단 방지
           }}
+          data-html2canvas-ignore="true"
         />
-      ))}
+      )}
     </div>
   );
 }
