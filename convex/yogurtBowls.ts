@@ -13,6 +13,22 @@ export const saveYogurtBowl = mutation({
     ingredients: v.array(v.string()),
   },
   handler: async (ctx, args) => {
+    // 인증 확인
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("로그인이 필요합니다.");
+    }
+
+    // 현재 유저 조회
+    const user = await ctx.db
+      .query("users")
+      .withIndex("email", (q) => q.eq("email", identity.email))
+      .first();
+
+    if (!user) {
+      throw new Error("유저 정보를 찾을 수 없습니다.");
+    }
+
     const today = new Date();
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, "0"); // 01, 02..
@@ -20,6 +36,7 @@ export const saveYogurtBowl = mutation({
     const date = `${year}.${month}.${day}`;
 
     const yogurtBowlId = await ctx.db.insert("yogurtBowls", {
+      userId: user._id,
       imageStorageId: args.imageStorageId,
       title: "오늘의 요거트볼",
       ingredients: args.ingredients,
@@ -90,5 +107,35 @@ export const deleteAllYogurtBowls = mutation({
       await ctx.db.delete(bowl._id);
     }
     return { deleted: allBowls.length };
+  },
+});
+
+// 현재 로그인한 유저가 만든 요거트볼 개수 조회
+export const getUserYogurtBowlCount = query({
+  args: {},
+  handler: async (ctx) => {
+    // 인증 확인
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      return 0;
+    }
+
+    // 현재 유저 조회
+    const user = await ctx.db
+      .query("users")
+      .withIndex("email", (q) => q.eq("email", identity.email))
+      .first();
+
+    if (!user) {
+      return 0;
+    }
+
+    // 유저가 만든 요거트볼 개수 조회
+    const bowls = await ctx.db
+      .query("yogurtBowls")
+      .withIndex("by_user", (q) => q.eq("userId", user._id))
+      .collect();
+
+    return bowls.length;
   },
 });

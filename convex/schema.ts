@@ -5,12 +5,13 @@ import { v } from "convex/values";
 export default defineSchema({
   ...authTables,
   yogurtBowls: defineTable({
+    userId: v.id("users"), // 요거트볼을 만든 유저 ID
     imageStorageId: v.string(), // Convex Storage ID
     title: v.string(),
     ingredients: v.array(v.string()),
     description: v.string(),
     createdAt: v.string(), // YYYY.MM.DD 형식
-  }),
+  }).index("by_user", ["userId"]),
   // authTables의 users 테이블 확장 (커스텀 필드 추가)
   users: defineTable({
     // Convex Auth 기본 필드

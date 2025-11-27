@@ -10,6 +10,7 @@ function MyPage() {
   const user = useQuery(api.users.currentUser);
   const { isAuthenticated } = useConvexAuth();
   const navigate = useNavigate();
+  const bowlCounts = useQuery(api.yogurtBowls.getUserYogurtBowlCount);
 
   // 로그인 안되어 있는 경우 메인 페이지로 팅겨냄
   useEffect(() => {
@@ -35,16 +36,17 @@ function MyPage() {
 
           <div className="flex pt-4 pb-4">
             <div className="flex-1 text-center">
-              <div className="text-2xl font-bold">23</div>
+              <div className="text-2xl font-bold">{bowlCounts ?? 0}</div>
               <div className="text-sm">만든 볼</div>
             </div>
             <div className="flex-1 text-center">
-              <div className="text-2xl font-bold">8</div>
+              <div className="text-2xl font-bold">0</div>
               <div className="text-sm">즐겨찾기</div>
             </div>
           </div>
         </div>
-        <button onClick={() => signOut()} className="mt-10 flex w-full cursor-pointer items-center justify-center gap-1 border-3 border-black bg-red-400 p-3 py-4 text-white hover:bg-red-500">
+
+        <button onClick={() => signOut()} className="mt-4 flex w-full cursor-pointer items-center justify-center gap-1 border-3 border-black bg-red-400 p-3 py-4 text-white hover:bg-red-500">
           로그아웃
         </button>
       </div>
