@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import mainImg from "../../public/images/logo/logo1.png";
 import { useConvexAuth, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
+import { BottomNav } from "../components/BottomNav";
 
 export function MainPage() {
   const navigate = useNavigate();
@@ -31,6 +32,8 @@ export function MainPage() {
           </button>
         )}
       </div>
+
+      <BottomNav isActive="Home" />
     </div>
   );
 }

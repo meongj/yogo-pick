@@ -60,7 +60,7 @@ export function CaptureButton({ ref, onClick, ingredients }: CaptureButtonProps)
 
   return (
     <button
-      className="absolute bottom-2 left-1/2 z-50 -translate-x-1/2 cursor-pointer px-3 py-2 transition-all duration-300 hover:scale-105 hover:drop-shadow-2xl"
+      className="absolute bottom-20 left-1/2 z-50 -translate-x-1/2 cursor-pointer px-3 py-2 transition-all duration-300 hover:scale-105 hover:drop-shadow-2xl"
       onClick={() => {
         handleClick();
         onClick?.();

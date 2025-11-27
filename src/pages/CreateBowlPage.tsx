@@ -4,6 +4,7 @@ import { YogurtBowl } from "../components/YogurtBowl";
 import type { Topping } from "../types/Topping";
 import { CaptureButton } from "../components/CaptureButton";
 import { useNavigate } from "react-router-dom";
+import { BottomNav } from "../components/BottomNav";
 
 function CreateBowlPage() {
   const [selectedTopping, setSelectedTopping] = useState<Topping | null>(null);
@@ -30,6 +31,7 @@ function CreateBowlPage() {
       <ToppingSelector onToppingSelect={onToppingSelect} />
       <YogurtBowl selectedTopping={selectedTopping} ref={captureRef} onToppingPlaced={handleToppingPlaced} />
       <CaptureButton ref={captureRef} onClick={() => navigate("/album")} ingredients={toppingNames} />
+      <BottomNav isActive="Make" />
     </div>
   );
 }
