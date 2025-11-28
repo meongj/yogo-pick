@@ -186,8 +186,8 @@ function BowlDetailPage() {
             {bowlDetail.ingredients.length === 0 ? (
               <span className="rounded-full border-3 border-gray-300 bg-gray-200 px-3 py-1 text-sm shadow">NONE</span>
             ) : (
-              bowlDetail.ingredients.map((topping, index) => (
-                <span key={index} className="rounded-full border-3 border-gray-300 bg-gray-200 px-3 py-1 text-sm shadow">
+              bowlDetail.ingredients.map((topping) => (
+                <span key={topping} className="rounded-full border-3 border-gray-300 bg-gray-200 px-3 py-1 text-sm shadow">
                   {topping}
                 </span>
               ))

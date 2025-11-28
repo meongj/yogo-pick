@@ -7,10 +7,11 @@ import { BottomNav } from "../components/BottomNav";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 
 const PAGE_SIZE = 4;
+const INITIAL_SIZE = 10;
 
 function BowlCardListPage() {
   const observerRef = useRef<HTMLDivElement>(null);
-  const { results, status, loadMore } = usePaginatedQuery(api.files.listFiles, {}, { initialNumItems: PAGE_SIZE });
+  const { results, status, loadMore } = usePaginatedQuery(api.files.listFiles, {}, { initialNumItems: INITIAL_SIZE });
 
   const navigate = useNavigate();
   const { isAuthenticated } = useConvexAuth();
