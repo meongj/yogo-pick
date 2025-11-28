@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useEffect, useState } from "react";
 import { BottomNav } from "../components/BottomNav";
+import { toast } from "../components/Toaster";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 
 interface RegisterFormData {
   email: string;
@@ -42,7 +44,7 @@ function RegisterPage() {
         nickname: data.nickname,
         flow: "signUp",
       });
-      alert("회원가입 성공!");
+      toast.success("회원가입 성공!");
     } catch (error) {
       console.error("회원가입 실패:", error);
 
@@ -51,19 +53,19 @@ function RegisterPage() {
 
       // 이미 존재하는 계정 에러 처리
       if (errorMessage.includes("already exists")) {
-        alert("이미 사용 중인 이메일입니다. 다른 이메일을 사용해주세요.");
+        toast.error("이미 사용 중인 이메일입니다. 다른 이메일을 사용해주세요.");
         return;
       }
 
       // 중복 닉네임 에러 처리
       if (errorMessage.includes("nickname") && errorMessage.includes("duplicate")) {
-        alert("이미 사용 중인 닉네임입니다. 다른 닉네임을 사용해주세요.");
+        toast.error("이미 사용 중인 닉네임입니다. 다른 닉네임을 사용해주세요.");
         return;
       }
 
       // 기타 에러
       const message = (error as { data?: string })?.data || errorMessage || "회원가입에 실패했습니다.";
-      alert(message);
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }
@@ -161,6 +163,7 @@ function RegisterPage() {
       </form>
 
       <BottomNav isActive="Home" />
+      {isSubmitting && <LoadingOverlay text="가입 중..." />}
     </div>
   );
 }

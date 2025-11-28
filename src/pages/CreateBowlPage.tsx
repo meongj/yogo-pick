@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { ToppingSelector } from "../components/ToppingSelector";
 import { YogurtBowl } from "../components/YogurtBowl";
 import type { Topping } from "../types/Topping";
@@ -7,28 +7,31 @@ import { useNavigate } from "react-router-dom";
 import { BottomNav } from "../components/BottomNav";
 import { useConvexAuth } from "convex/react";
 import { CreateBowlModal } from "../components/CreateBowlModal";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 
 function CreateBowlPage() {
   const [selectedTopping, setSelectedTopping] = useState<Topping | null>(null);
   const [toppingNames, setToppingNames] = useState<string[]>([]);
   const captureRef = useRef<HTMLDivElement>(null);
   const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
   const { isAuthenticated } = useConvexAuth();
 
-  const onToppingSelect = (topping: Topping) => {
+  // 토핑 선택시 리렌더링 방지
+  const onToppingSelect = useCallback((topping: Topping) => {
     setSelectedTopping(topping);
-  };
+  }, []); // 처음 한번만 실행됨
 
-  const handleToppingPlaced = (name: string) => {
+  const handleToppingPlaced = useCallback((name: string) => {
     setToppingNames((prev) => {
       if (prev.includes(name)) {
         return prev;
       }
       return [...prev, name];
     });
-  };
+  }, []);
 
   return (
     <div className="z-0 mx-auto h-screen max-w-md overflow-x-hidden overflow-y-hidden bg-amber-50">
@@ -43,10 +46,13 @@ function CreateBowlPage() {
           setShowModal(true);
           setSelectedTopping(null);
         }}
+        onLoadingChange={setIsLoading}
       />
       <BottomNav isActive="Make" />
 
       {showModal && <CreateBowlModal isOpen={showModal} onClose={() => setShowModal(false)} />}
+
+      {isLoading && <LoadingOverlay text="저장 중...👩🏻‍🍳" />}
     </div>
   );
 }

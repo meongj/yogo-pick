@@ -1,8 +1,10 @@
 import html2canvas from "html2canvas";
 import type { RefObject } from "react";
+import { useState } from "react";
 import saveBtn from "../../public/images/icons/saveBtn.png";
 import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
+import { toast } from "../components/Toaster";
 
 interface CaptureButtonProps {
   ref: RefObject<HTMLDivElement | null>;
@@ -10,22 +12,32 @@ interface CaptureButtonProps {
   ingredients: string[];
   isAuthenticated: boolean;
   onUnauthorized: () => void;
+  onLoadingChange?: (isLoading: boolean) => void;
 }
 
-export function CaptureButton({ ref, onClick, ingredients, isAuthenticated, onUnauthorized }: CaptureButtonProps) {
+export function CaptureButton({ ref, onClick, ingredients, isAuthenticated, onUnauthorized, onLoadingChange }: CaptureButtonProps) {
   const generateUploadUrl = useMutation(api.yogurtBowls.generateUploadUrl);
   const saveYogurtBowl = useMutation(api.yogurtBowls.saveYogurtBowl);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleClick = async () => {
+    if (isLoading) return;
+
+    setIsLoading(true);
+    onLoadingChange?.(true);
     try {
       // 로그인 되어 있지 않다면 저장할 수 없다
       if (!isAuthenticated) {
         onUnauthorized?.();
+        setIsLoading(false);
+        onLoadingChange?.(false);
         return;
       }
 
       if (!ref.current) {
-        alert("저장할 수 없습니다");
+        toast.error("저장할 수 없습니다");
+        setIsLoading(false);
+        onLoadingChange?.(false);
         return;
       }
 
@@ -51,6 +63,10 @@ export function CaptureButton({ ref, onClick, ingredients, isAuthenticated, onUn
         body: blob,
       });
 
+      if (!result.ok) {
+        throw new Error(`Storage 업로드 에러 ${result.status}`);
+      }
+
       const { storageId } = await result.json();
 
       // DB 저장
@@ -59,13 +75,16 @@ export function CaptureButton({ ref, onClick, ingredients, isAuthenticated, onUn
         ingredients: ingredients,
       });
 
-      alert("저장이 완료되었습니다");
+      toast.success("저장이 완료되었습니다");
 
       // 저장 후 navigate
       onClick?.();
     } catch (error) {
       console.error("저장 중 오류 발생", error);
-      alert("저장에 실패했습니다. 다시 시도해주세요.");
+      toast.error("저장에 실패했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsLoading(false);
+      onLoadingChange?.(false);
     }
   };
 
