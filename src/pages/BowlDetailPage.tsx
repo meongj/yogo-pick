@@ -11,6 +11,7 @@ import { useConvexAuth, useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "../components/Toaster";
 
 function BowlDetailPage() {
   const { id } = useParams();
@@ -64,11 +65,11 @@ function BowlDetailPage() {
           title: editedTitle,
           description: editedDescription,
         });
-        alert("저장되었습니다!");
+        toast.success("저장되었습니다");
         setIsEditing(false);
       } catch (error) {
         console.error("저장 실패:", error);
-        alert("저장에 실패했습니다.");
+        toast.error("저장에 실패했습니다.");
       }
     } else {
       // 편집 모드로 전환
@@ -77,16 +78,15 @@ function BowlDetailPage() {
   };
 
   // 삭제 모달
-
   const handleDelete = async () => {
     try {
       await deleteYogurtBowl({ id: id as Id<"yogurtBowls"> });
-      alert("삭제 되었습니다");
+      toast.success("삭제 되었습니다");
       setIsDeleteModalOpen(false);
       navigate("/album");
     } catch (err) {
       console.error("Network or server error:", err);
-      alert("네트워크 오류가 발생했어요. 다시 시도해주세요!");
+      toast.error("네트워크 오류가 발생했어요. 다시 시도해주세요!");
       navigate("/album");
     }
   };

@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useEffect, useState } from "react";
 import { BottomNav } from "../components/BottomNav";
+import { toast } from "../components/Toaster";
 
 interface LoginFormData {
   email: string;
@@ -39,7 +40,7 @@ function LoginPage() {
         password: data.password,
         flow: "signIn",
       });
-      alert("로그인 성공!");
+      toast.success("로그인 성공");
     } catch (error) {
       console.error("로그인 실패:", error);
 
@@ -48,19 +49,19 @@ function LoginPage() {
 
       // InvalidAccountId 에러 처리
       if (errorMessage.includes("InvalidAccountId")) {
-        alert("존재하지 않는 계정입니다. 이메일을 확인해주세요.");
+        toast.error("존재하지 않는 계정입니다. 이메일을 확인해주세요.");
         return;
       }
 
       // 비밀번호 불일치 에러 처리
       if (errorMessage.includes("Invalid") || errorMessage.includes("Credentials")) {
-        alert("이메일 또는 비밀번호가 일치하지 않습니다.");
+        toast.error("이메일 또는 비밀번호가 일치하지 않습니다.");
         return;
       }
 
       // 기타 에러
       const message = (error as { data?: string })?.data || errorMessage || "로그인에 실패했습니다.";
-      alert(message);
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }

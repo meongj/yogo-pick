@@ -3,6 +3,7 @@ import type { RefObject } from "react";
 import saveBtn from "../../public/images/icons/saveBtn.png";
 import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
+import { toast } from "../components/Toaster";
 
 interface CaptureButtonProps {
   ref: RefObject<HTMLDivElement | null>;
@@ -25,7 +26,7 @@ export function CaptureButton({ ref, onClick, ingredients, isAuthenticated, onUn
       }
 
       if (!ref.current) {
-        alert("저장할 수 없습니다");
+        toast.error("저장할 수 없습니다");
         return;
       }
 
@@ -59,13 +60,13 @@ export function CaptureButton({ ref, onClick, ingredients, isAuthenticated, onUn
         ingredients: ingredients,
       });
 
-      alert("저장이 완료되었습니다");
+      toast.success("저장이 완료되었습니다");
 
       // 저장 후 navigate
       onClick?.();
     } catch (error) {
       console.error("저장 중 오류 발생", error);
-      alert("저장에 실패했습니다. 다시 시도해주세요.");
+      toast.error("저장에 실패했습니다. 다시 시도해주세요.");
     }
   };
 
