@@ -5,6 +5,7 @@ import { useConvexAuth } from "convex/react";
 import { useNavigate } from "react-router-dom";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useEffect, useState } from "react";
+import { BottomNav } from "../components/BottomNav";
 
 interface LoginFormData {
   email: string;
@@ -133,6 +134,7 @@ function LoginPage() {
           </button>
         </div>
       </div>
+      <BottomNav isActive="Home" />
     </div>
   );
 }
