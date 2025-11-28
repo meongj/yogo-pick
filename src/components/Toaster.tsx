@@ -31,7 +31,7 @@ export function Toaster() {
   };
 
   return (
-    <div className="fixed top-4 left-1/2 z-50 w-full max-w-md -translate-x-1/2 px-4" onMouseEnter={startPause} onMouseLeave={endPause}>
+    <div className="fixed top-4 left-1/2 z-50 w-full max-w-md -translate-x-1/2 px-4" onMouseEnter={startPause} onMouseLeave={endPause} aria-live="polite" role="status">
       {toasts
         .filter((t) => t.visible)
         .map((t) => (
