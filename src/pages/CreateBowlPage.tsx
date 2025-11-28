@@ -34,7 +34,16 @@ function CreateBowlPage() {
     <div className="z-0 mx-auto h-screen max-w-md overflow-x-hidden overflow-y-hidden bg-amber-50">
       <ToppingSelector onToppingSelect={onToppingSelect} />
       <YogurtBowl selectedTopping={selectedTopping} ref={captureRef} onToppingPlaced={handleToppingPlaced} />
-      <CaptureButton ref={captureRef} onClick={() => navigate("/album")} ingredients={toppingNames} isAuthenticated={isAuthenticated} onUnauthorized={() => setShowModal(true)} />
+      <CaptureButton
+        ref={captureRef}
+        onClick={() => navigate("/album")}
+        ingredients={toppingNames}
+        isAuthenticated={isAuthenticated}
+        onUnauthorized={() => {
+          setShowModal(true);
+          setSelectedTopping(null);
+        }}
+      />
       <BottomNav isActive="Make" />
 
       {showModal && <CreateBowlModal isOpen={showModal} onClose={() => setShowModal(false)} />}
