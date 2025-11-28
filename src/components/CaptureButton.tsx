@@ -63,6 +63,10 @@ export function CaptureButton({ ref, onClick, ingredients, isAuthenticated, onUn
         body: blob,
       });
 
+      if (!result.ok) {
+        throw new Error(`Storage 업로드 에러 ${result.status}`);
+      }
+
       const { storageId } = await result.json();
 
       // DB 저장

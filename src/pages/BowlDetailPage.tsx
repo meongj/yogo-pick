@@ -33,6 +33,7 @@ function BowlDetailPage() {
   const deleteYogurtBowl = useMutation(api.yogurtBowls.deleteYogurtBowl);
 
   const { isAuthenticated } = useConvexAuth();
+  const isMountedRef = useRef(true); // 화면상 존재 여부 체크용 (저장 후 화면 이탈 방지)
 
   // 로그인 안되어 있는 경우 메인 페이지로 팅겨냄
   useEffect(() => {
@@ -56,6 +57,12 @@ function BowlDetailPage() {
     }
   }, [isEditing]);
 
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -68,17 +75,23 @@ function BowlDetailPage() {
           title: editedTitle,
           description: editedDescription,
         });
-        toast.success("저장되었습니다");
-        setIsEditing(false);
+        if (isMountedRef.current) {
+          toast.success("저장되었습니다");
+          setIsEditing(false);
+        }
       } catch (error) {
         console.error("저장 실패:", error);
-        toast.error("저장에 실패했습니다.");
+        if (isMountedRef.current) {
+          toast.error("저장에 실패했습니다.");
+        }
       }
     } else {
       // 편집 모드로 전환
       setIsEditing(true);
     }
-    setIsLoading(false);
+    if (isMountedRef.current) {
+      setIsLoading(false);
+    }
   };
 
   // 삭제 모달
@@ -87,15 +100,22 @@ function BowlDetailPage() {
       setIsLoading(true);
 
       await deleteYogurtBowl({ id: id as Id<"yogurtBowls"> });
-      toast.success("삭제 되었습니다");
-      setIsDeleteModalOpen(false);
+
+      if (isMountedRef.current) {
+        toast.success("삭제 되었습니다");
+        setIsDeleteModalOpen(false);
+      }
       navigate("/album");
     } catch (err) {
       console.error("Network or server error:", err);
-      toast.error("네트워크 오류가 발생했어요. 다시 시도해주세요!");
+      if (isMountedRef.current) {
+        toast.error("네트워크 오류가 발생했어요. 다시 시도해주세요!");
+      }
       navigate("/album");
     } finally {
-      setIsLoading(false);
+      if (isMountedRef.current) {
+        setIsLoading(false);
+      }
     }
   };
 
