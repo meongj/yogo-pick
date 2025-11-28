@@ -45,14 +45,11 @@ export function ToppingSelector({ onToppingSelect }: ToppingSelectorProps) {
   };
 
   return (
-    <div
-      className="relative z-50 flex w-full flex-row flex-nowrap gap-1 overflow-x-auto overflow-y-hidden px-1"
-      aria-label="토핑 선택"
-    >
+    <div className="relative z-50 flex w-full flex-row flex-nowrap gap-1 overflow-x-scroll overflow-y-hidden px-1" aria-label="토핑 선택">
       {toppings.map((topping) => (
         <div
           key={topping.id}
-          className={`relative flex min-w-[80px] flex-shrink-0 flex-col items-center rounded-lg p-2 ${hoverTopping === topping.id ? "scale-120" : "scale-100"}`}
+          className={`relative flex min-w-20 shrink-0 flex-col items-center rounded-lg p-2 ${hoverTopping === topping.id ? "scale-120" : "scale-100"}`}
           onMouseEnter={() => {
             setHoverTopping(topping.id);
           }}
@@ -60,22 +57,10 @@ export function ToppingSelector({ onToppingSelect }: ToppingSelectorProps) {
             setHoverTopping("");
           }}
         >
-          <button
-            className="cursor-pointer rounded-full bg-transparent p-2 hover:scale-105 hover:bg-amber-50"
-            onClick={() => handleSelect(topping)}
-            aria-label={`${topping.name} 토핑 선택`}
-          >
-            <img
-              src={topping.image}
-              alt={topping.name}
-              className="h-13 w-13 object-contain"
-            />
+          <button className="cursor-pointer rounded-full bg-transparent p-2 hover:scale-105 hover:bg-amber-50" onClick={() => handleSelect(topping)} aria-label={`${topping.name} 토핑 선택`}>
+            <img src={topping.image} alt={topping.name} className="h-13 w-13 object-contain" />
           </button>
-          <span
-            className={`z-50 mt-1 text-sm ${hoverTopping === topping.id ? "visible" : "invisible"} absolute bottom-0`}
-          >
-            {topping.name}
-          </span>
+          <span className={`z-50 mt-1 text-sm ${hoverTopping === topping.id ? "visible" : "invisible"} absolute bottom-0`}>{topping.name}</span>
         </div>
       ))}
     </div>

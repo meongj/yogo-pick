@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { getAuthUserId } from "@convex-dev/auth/server";
 
 // Storage 업로드 URL 생성
 export const generateUploadUrl = mutation(async (ctx) => {
@@ -13,6 +14,12 @@ export const saveYogurtBowl = mutation({
     ingredients: v.array(v.string()),
   },
   handler: async (ctx, args) => {
+    // 인증 확인
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw new Error("로그인이 필요합니다.");
+    }
+
     const today = new Date();
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, "0"); // 01, 02..
@@ -20,6 +27,7 @@ export const saveYogurtBowl = mutation({
     const date = `${year}.${month}.${day}`;
 
     const yogurtBowlId = await ctx.db.insert("yogurtBowls", {
+      userId: userId,
       imageStorageId: args.imageStorageId,
       title: "오늘의 요거트볼",
       ingredients: args.ingredients,
@@ -63,6 +71,20 @@ export const updateYogurtBowlTitle = mutation({
     description: v.string(),
   },
   handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw new Error("로그인이 필요합니다.");
+    }
+
+    const bowl = await ctx.db.get(args.id);
+    if (!bowl) {
+      throw new Error("요거트볼을 찾을 수 없습니다.");
+    }
+
+    if (bowl.userId !== userId) {
+      throw new Error("본인의 요거트볼만 수정할 수 있습니다.");
+    }
+
     await ctx.db.patch(args.id, {
       title: args.title,
       description: args.description,
@@ -73,7 +95,20 @@ export const updateYogurtBowlTitle = mutation({
 export const deleteYogurtBowl = mutation({
   args: { id: v.id("yogurtBowls") },
   handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      throw new Error("로그인이 필요합니다.");
+    }
+
     const bowl = await ctx.db.get(args.id);
+    if (!bowl) {
+      throw new Error("요거트볼을 찾을 수 없습니다.");
+    }
+
+    if (bowl.userId !== userId) {
+      throw new Error("본인의 요거트볼만 삭제할 수 있습니다.");
+    }
+
     if (bowl?.imageStorageId) {
       await ctx.storage.delete(bowl.imageStorageId);
     }
@@ -90,5 +125,25 @@ export const deleteAllYogurtBowls = mutation({
       await ctx.db.delete(bowl._id);
     }
     return { deleted: allBowls.length };
+  },
+});
+
+// 현재 로그인한 유저가 만든 요거트볼 개수 조회
+export const getUserYogurtBowlCount = query({
+  args: {},
+  handler: async (ctx) => {
+    // 인증 확인
+    const userId = await getAuthUserId(ctx);
+    if (!userId) {
+      return 0;
+    }
+
+    // 유저가 만든 요거트볼 개수 조회
+    const bowls = await ctx.db
+      .query("yogurtBowls")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .collect();
+
+    return bowls.length;
   },
 });
