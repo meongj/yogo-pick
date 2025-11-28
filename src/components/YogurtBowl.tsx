@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import yogurtBowl from "../../public/images/bowl/yogartBowl.png";
 import type { Topping } from "../types/Topping";
 import pop from "../../public/sound/pop.mp3";
@@ -10,9 +10,7 @@ interface YogurtBowlProps {
   ref?: React.Ref<HTMLDivElement>;
 }
 
-export function YogurtBowl({ selectedTopping, onToppingPlaced, ref }: YogurtBowlProps) {
-  // 마우스 위치
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+export const YogurtBowl = memo(({ selectedTopping, onToppingPlaced, ref }: YogurtBowlProps) => {
   // 클릭한 위치와 어떤 이미지 인지
   const [placedImages, setPlacedImages] = useState<{ xPercent: number; yPercent: number; id: string; image: string; name: string }[]>([]);
 
@@ -21,11 +19,18 @@ export function YogurtBowl({ selectedTopping, onToppingPlaced, ref }: YogurtBowl
   const imageRef = useRef<HTMLImageElement>(null);
 
   const playPlaceSound = useSound(pop);
+  // 마우스 무브 리렌더링 방지
+  const cursorImageRef = useRef<HTMLImageElement>(null);
+  const mousePosRef = useRef({ x: 0, y: 0 }); // 현재 마우스 위치 추적
 
   // 마우스무브 이벤트리스너 추가
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePos({ x: e.clientX, y: e.clientY });
+      mousePosRef.current = { x: e.clientX, y: e.clientY }; // 위치 저장
+      if (cursorImageRef.current) {
+        cursorImageRef.current.style.left = `${e.clientX - 10}px`;
+        cursorImageRef.current.style.top = `${e.clientY - 10}px`;
+      }
     };
 
     window.addEventListener("mousemove", handleMouseMove);
@@ -34,6 +39,14 @@ export function YogurtBowl({ selectedTopping, onToppingPlaced, ref }: YogurtBowl
       window.removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
+
+  // 토핑 이미지가 바뀔 때 현재 마우스 위치로 초기화
+  useEffect(() => {
+    if (cursorImageRef.current) {
+      cursorImageRef.current.style.left = `${mousePosRef.current.x - 10}px`;
+      cursorImageRef.current.style.top = `${mousePosRef.current.y - 10}px`;
+    }
+  }, [selectedTopping]);
 
   // 이미지 로드 후 실제 렌더링 크기 계산
   const handleImageLoad = () => {
@@ -118,13 +131,12 @@ export function YogurtBowl({ selectedTopping, onToppingPlaced, ref }: YogurtBowl
           className="z-50 h-[75px] w-[75px] object-contain"
           style={{
             position: "fixed",
-            left: `${mousePos.x - 10}px`, // 커서 왼쪽으로 10px
-            top: `${mousePos.y - 10}px`, // 커서 위로 10px
             pointerEvents: "none", // 마우스 이벤트 차단 방지
           }}
+          ref={cursorImageRef} // ref 토핑위치 연결
           data-html2canvas-ignore="true"
         />
       )}
     </div>
   );
-}
+});

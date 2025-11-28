@@ -69,7 +69,15 @@ function LoginPage() {
   };
 
   const handleGoogleLogin = async () => {
-    await signIn("google");
+    setIsLoading(true);
+    try {
+      await signIn("google");
+    } catch (error) {
+      console.error("Google 로그인 실패", error);
+      toast.error("Google 로그인에 실패했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsLoading(false); // 로딩 종료
+    }
   };
 
   return (
