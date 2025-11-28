@@ -7,6 +7,7 @@ import { useAuthActions } from "@convex-dev/auth/react";
 import { useEffect, useState } from "react";
 import { BottomNav } from "../components/BottomNav";
 import { toast } from "../components/Toaster";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 
 interface LoginFormData {
   email: string;
@@ -136,6 +137,8 @@ function LoginPage() {
         </div>
       </div>
       <BottomNav isActive="Home" />
+
+      {isLoading && <LoadingOverlay text="로그인 중..." />}
     </div>
   );
 }

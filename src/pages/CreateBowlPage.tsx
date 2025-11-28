@@ -7,12 +7,14 @@ import { useNavigate } from "react-router-dom";
 import { BottomNav } from "../components/BottomNav";
 import { useConvexAuth } from "convex/react";
 import { CreateBowlModal } from "../components/CreateBowlModal";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 
 function CreateBowlPage() {
   const [selectedTopping, setSelectedTopping] = useState<Topping | null>(null);
   const [toppingNames, setToppingNames] = useState<string[]>([]);
   const captureRef = useRef<HTMLDivElement>(null);
   const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
   const { isAuthenticated } = useConvexAuth();
@@ -43,10 +45,13 @@ function CreateBowlPage() {
           setShowModal(true);
           setSelectedTopping(null);
         }}
+        onLoadingChange={setIsLoading}
       />
       <BottomNav isActive="Make" />
 
       {showModal && <CreateBowlModal isOpen={showModal} onClose={() => setShowModal(false)} />}
+
+      {isLoading && <LoadingOverlay text="저장 중...👩🏻‍🍳" />}
     </div>
   );
 }

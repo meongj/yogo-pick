@@ -6,6 +6,7 @@ import { useAuthActions } from "@convex-dev/auth/react";
 import { useEffect, useState } from "react";
 import { BottomNav } from "../components/BottomNav";
 import { toast } from "../components/Toaster";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 
 interface RegisterFormData {
   email: string;
@@ -162,6 +163,7 @@ function RegisterPage() {
       </form>
 
       <BottomNav isActive="Home" />
+      {isSubmitting && <LoadingOverlay text="가입 중..." />}
     </div>
   );
 }
