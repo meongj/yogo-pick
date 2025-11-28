@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import yogartBowl from "../../public/images/bowl/yogartBowl.png";
+import yogurtBowl from "../../public/images/bowl/yogartBowl.png";
 import type { Topping } from "../types/Topping";
 import pop from "../../public/sound/pop.mp3";
 import { useSound } from "../hooks/useSound";
@@ -88,7 +88,7 @@ export function YogurtBowl({ selectedTopping, onToppingPlaced, ref }: YogurtBowl
           }}
         >
           {/* 요거트볼 이미지 */}
-          <img src={yogartBowl} alt="Yogurt Bowl" className="pointer-events-none max-w-full object-contain" onLoad={handleImageLoad} />
+          <img src={yogurtBowl} alt="Yogurt Bowl" className="pointer-events-none max-w-full object-contain" onLoad={handleImageLoad} />
 
           {/* 클릭 할 수 있는 영역(래퍼) */}
           <div className="absolute inset-0 cursor-pointer" style={{ clipPath: "circle(26% at 50% 50%)" }} onClick={handleClick} />

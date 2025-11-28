@@ -71,7 +71,7 @@ export function CaptureButton({ ref, onClick, ingredients, isAuthenticated, onUn
 
   return (
     <button className="absolute bottom-20 left-1/2 z-50 -translate-x-1/2 cursor-pointer px-3 py-2 transition-all duration-300 hover:scale-105 hover:drop-shadow-2xl" onClick={handleClick}>
-      <img src={saveBtn} className="h-40 w-40" />
+      <img src={saveBtn} className="h-40 w-40" alt="완성 버튼" />
     </button>
   );
 }

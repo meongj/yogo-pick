@@ -32,7 +32,9 @@ export function CreateBowlModal({ isOpen, onClose }: CreateBowlModalProps) {
           <img src={lockIcon} alt="잠금 아이콘" />
         </div>
         <div className="flex flex-col items-center justify-center gap-2 pb-10 text-xl">
-          <h3 id="modal-text">로그인하면 저장할 수 있어요💕</h3>
+          <h2 id="modal-text" className="text-xl">
+            로그인하면 저장할 수 있어요💕
+          </h2>
           <h4 className="flex justify-start text-sm"> 3초면 끝나요!</h4>
         </div>
         <div className="flex flex-col items-center justify-center gap-3">
