@@ -4,13 +4,18 @@ import { YogurtBowl } from "../components/YogurtBowl";
 import type { Topping } from "../types/Topping";
 import { CaptureButton } from "../components/CaptureButton";
 import { useNavigate } from "react-router-dom";
+import { BottomNav } from "../components/BottomNav";
+import { useConvexAuth } from "convex/react";
+import { CreateBowlModal } from "../components/CreateBowlModal";
 
 function CreateBowlPage() {
   const [selectedTopping, setSelectedTopping] = useState<Topping | null>(null);
   const [toppingNames, setToppingNames] = useState<string[]>([]);
   const captureRef = useRef<HTMLDivElement>(null);
+  const [showModal, setShowModal] = useState(false);
 
   const navigate = useNavigate();
+  const { isAuthenticated } = useConvexAuth();
 
   const onToppingSelect = (topping: Topping) => {
     setSelectedTopping(topping);
@@ -26,10 +31,22 @@ function CreateBowlPage() {
   };
 
   return (
-    <div className="z-0 w-screen overflow-x-hidden">
+    <div className="z-0 mx-auto h-screen max-w-md overflow-x-hidden overflow-y-hidden bg-amber-50">
       <ToppingSelector onToppingSelect={onToppingSelect} />
       <YogurtBowl selectedTopping={selectedTopping} ref={captureRef} onToppingPlaced={handleToppingPlaced} />
-      <CaptureButton ref={captureRef} onClick={() => navigate("/album")} ingredients={toppingNames} />
+      <CaptureButton
+        ref={captureRef}
+        onClick={() => navigate("/album")}
+        ingredients={toppingNames}
+        isAuthenticated={isAuthenticated}
+        onUnauthorized={() => {
+          setShowModal(true);
+          setSelectedTopping(null);
+        }}
+      />
+      <BottomNav isActive="Make" />
+
+      {showModal && <CreateBowlModal isOpen={showModal} onClose={() => setShowModal(false)} />}
     </div>
   );
 }

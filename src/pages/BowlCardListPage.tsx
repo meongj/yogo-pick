@@ -3,7 +3,7 @@ import BowlCard from "../components/BowlCard";
 import { api } from "../../convex/_generated/api";
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar";
+import { BottomNav } from "../components/BottomNav";
 
 const PAGE_SIZE = 3;
 
@@ -53,8 +53,6 @@ function BowlCardListPage() {
 
   return (
     <div className="mx-auto h-screen max-w-md overflow-y-auto bg-amber-50">
-      <Navbar />
-
       <div className="flex items-center justify-center py-8">
         <h2 className="text-2xl font-medium">My YogurtBowl</h2>
       </div>
@@ -65,6 +63,8 @@ function BowlCardListPage() {
         {status === "LoadingMore" && <div className="col-span-2 py-10 text-center">로딩 중...</div>}
       </div>
       <div ref={observerRef} aria-hidden="true" />
+
+      <BottomNav isActive="Album" />
     </div>
   );
 }

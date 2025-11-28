@@ -1,10 +1,10 @@
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useConvexAuth, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import Navbar from "../components/Navbar";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import defaultProfile from "../../public/images/image/defaultProfile.png";
+import { BottomNav } from "../components/BottomNav";
 
 function MyPage() {
   const { signOut } = useAuthActions();
@@ -22,7 +22,6 @@ function MyPage() {
 
   return (
     <div className="mx-auto h-screen max-w-md overflow-y-auto bg-amber-50">
-      <Navbar />
       <div className="m-6">
         <div className="mt-20 border-4 bg-gray-100 p-3">
           <div className="m-2 flex border-b border-gray-300 pb-6">
@@ -55,6 +54,7 @@ function MyPage() {
           로그아웃
         </button>
       </div>
+      <BottomNav isActive="MyPage" />
     </div>
   );
 }
