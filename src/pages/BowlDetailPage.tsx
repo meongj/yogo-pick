@@ -12,6 +12,7 @@ import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "../components/Toaster";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 
 function BowlDetailPage() {
   const { id } = useParams();
@@ -27,6 +28,7 @@ function BowlDetailPage() {
   const updateYogurtBowl = useMutation(api.yogurtBowls.updateYogurtBowlTitle);
   //삭제 모달 열렸는지 여부
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const deleteYogurtBowl = useMutation(api.yogurtBowls.deleteYogurtBowl);
 
@@ -57,6 +59,7 @@ function BowlDetailPage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    setIsLoading(true);
     if (isEditing) {
       // 저장 모드: API 호출
       try {
@@ -75,11 +78,14 @@ function BowlDetailPage() {
       // 편집 모드로 전환
       setIsEditing(true);
     }
+    setIsLoading(false);
   };
 
   // 삭제 모달
   const handleDelete = async () => {
     try {
+      setIsLoading(true);
+
       await deleteYogurtBowl({ id: id as Id<"yogurtBowls"> });
       toast.success("삭제 되었습니다");
       setIsDeleteModalOpen(false);
@@ -88,15 +94,13 @@ function BowlDetailPage() {
       console.error("Network or server error:", err);
       toast.error("네트워크 오류가 발생했어요. 다시 시도해주세요!");
       navigate("/album");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   if (bowlDetail === undefined) {
-    return (
-      <div className="mx-auto h-screen max-w-md overflow-y-auto bg-amber-50 px-18 py-10">
-        <p>Loading...</p>
-      </div>
-    );
+    return <LoadingOverlay text="Loading..." />;
   }
 
   if (bowlDetail === null) {
@@ -245,6 +249,8 @@ function BowlDetailPage() {
           </div>
         </div>
       )}
+
+      {isLoading && <LoadingOverlay text="처리 중..." />}
     </form>
   );
 }
