@@ -10,15 +10,15 @@ export function MainPage() {
   const { isAuthenticated } = useConvexAuth();
 
   return (
-    <div className="mx-auto h-screen max-w-md overflow-y-auto bg-amber-50 px-18 py-10">
-      <div className="mt-17 flex items-center justify-center p-12">
-        <h1 className="text-7xl">YogoPick</h1>
+    <div className="mx-auto flex h-screen max-w-md flex-col overflow-hidden bg-amber-50 px-4 py-6">
+      <div className="mt-17 flex items-center justify-center p-3">
+        <h1 className="text-6xl">YogoPick</h1>
       </div>
 
-      <div className="mt-3">
+      <div className="mt-3 flex-1 items-center justify-center">
         <img src={mainImg} alt="로고" />
       </div>
-      <div className="mt-5 flex flex-col items-center justify-center gap-5 p-12">
+      <div className="flex flex-1 flex-col items-center justify-center gap-3 px-12 pb-12">
         <button className="flex w-full cursor-pointer items-center justify-center border-2 bg-indigo-300 p-3 hover:bg-indigo-400 disabled:opacity-50" onClick={() => navigate("/create")}>
           요거트 볼 만들기
         </button>

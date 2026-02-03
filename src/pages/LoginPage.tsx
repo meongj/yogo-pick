@@ -81,7 +81,7 @@ function LoginPage() {
   };
 
   return (
-    <div className="mx-auto h-screen max-w-md overflow-y-auto bg-amber-50 px-18 py-10">
+    <div className="mx-auto h-screen max-w-md overflow-y-auto bg-amber-50 px-4 py-6">
       <div className="flex items-center justify-center p-12">
         <h1 className="text-4xl">Login</h1>
       </div>

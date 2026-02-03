@@ -124,7 +124,7 @@ function BowlDetailPage() {
 
   if (bowlDetail === null) {
     return (
-      <div className="mx-auto h-screen max-w-md overflow-y-auto bg-amber-50 px-18 py-10">
+      <div className="mx-auto h-screen max-w-md overflow-y-auto bg-amber-50 px-4 py-6">
         <p>해당 요거트 볼을 찾을 수 없습니다.</p>
       </div>
     );
@@ -132,7 +132,7 @@ function BowlDetailPage() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="mx-auto h-screen max-w-md overflow-y-auto bg-amber-50 px-18 py-10">
+      <div className="mx-auto h-screen max-w-md overflow-y-auto bg-amber-50 px-4 py-6">
         <div className="pb-5">
           <button
             className="flex gap-1 border-4 bg-white px-2 py-1 shadow-xl hover:scale-110 hover:cursor-pointer hover:shadow-lg"
