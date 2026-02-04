@@ -58,7 +58,7 @@ function BowlCardListPage() {
 
       {results.length === 0 && <div className="col-span-2 py-10 text-center text-gray-500">저장된 요거트볼이 없습니다</div>}
 
-      <div className="grid grid-cols-2 gap-7 p-20 pt-10">
+      <div className="grid grid-cols-2 gap-4 p-4 pt-4">
         {results?.map((bowl) => {
           return <BowlCard key={bowl._id} id={bowl._id} image={bowl.url} date={new Date(bowl.createdAt).toLocaleString()} onClick={() => navigate(`/detail/${bowl._id}`)} />;
         })}
