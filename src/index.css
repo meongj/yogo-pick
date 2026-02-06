@@ -102,6 +102,18 @@ body {
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+@theme {
+  --animate-shimmer: shimmer 1.5s infinite;
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+}
+
 :root {
   --radius: 0.625rem;
   --background: hsl(0 0% 100%);
