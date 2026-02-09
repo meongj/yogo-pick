@@ -81,8 +81,8 @@ convex/                     # Convex 백엔드
 
 ```bash
 # 저장소 클론
-git clone https://github.com/meongj/yogoPick.git
-cd yogoPick
+git clone https://github.com/meongj/yogo-pick.git
+cd yogo-pick
 
 # 의존성 설치
 npm install
