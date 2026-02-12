@@ -30,6 +30,8 @@ jobs:
       # React 빌드
       - name: Build
         run: npm run build
+        env:
+          VITE_CONVEX_URL: ${{ secrets.VITE_CONVEX_URL }}
       # SSH 설정
       - name: Setup SSH
         run: |
