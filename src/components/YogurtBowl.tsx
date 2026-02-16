@@ -10,7 +10,7 @@ interface YogurtBowlProps {
 }
 
 export const YogurtBowl = memo(({ ref }: YogurtBowlProps) => {
-  // 선택한 토핑 set
+  // 선택한 토핑 get
   const selectedTopping = useAtomValue(selectedToppingAtom);
   // 토핑명 set
   const addToppingName = useSetAtom(addToppingNameAtom);

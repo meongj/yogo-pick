@@ -11,9 +11,6 @@ import { selectedToppingAtom, showModalAtom, toppingNamesAtom } from "@/stores/c
 interface CaptureButtonProps {
   ref: RefObject<HTMLDivElement | null>;
   onClick?: () => void;
-  // ingredients: string[];
-  // isAuthenticated: boolean;
-  // onUnauthorized: () => void;
   onLoadingChange?: (isLoading: boolean) => void;
 }
 
