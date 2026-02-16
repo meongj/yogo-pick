@@ -1,16 +1,20 @@
 import { memo, useEffect, useRef, useState } from "react";
 import yogurtBowl from "../../public/images/bowl/yogartBowl.png";
-import type { Topping } from "../types/Topping";
 import pop from "../../public/sound/pop.mp3";
 import { useSound } from "../hooks/useSound";
+import { useAtomValue, useSetAtom } from "jotai";
+import { addToppingNameAtom, selectedToppingAtom } from "@/stores/createBowl";
 
 interface YogurtBowlProps {
-  selectedTopping: Topping | null;
-  onToppingPlaced?: (name: string) => void;
   ref?: React.Ref<HTMLDivElement>;
 }
 
-export const YogurtBowl = memo(({ selectedTopping, onToppingPlaced, ref }: YogurtBowlProps) => {
+export const YogurtBowl = memo(({ ref }: YogurtBowlProps) => {
+  // 선택한 토핑 set
+  const selectedTopping = useAtomValue(selectedToppingAtom);
+  // 토핑명 set
+  const addToppingName = useSetAtom(addToppingNameAtom);
+
   // 클릭한 위치와 어떤 이미지 인지
   const [placedImages, setPlacedImages] = useState<{ xPercent: number; yPercent: number; id: string; image: string; name: string }[]>([]);
 
@@ -77,7 +81,7 @@ export const YogurtBowl = memo(({ selectedTopping, onToppingPlaced, ref }: Yogur
     const yPercent = ((e.clientY - rect.top) / rect.height) * 100;
 
     setPlacedImages([...placedImages, { xPercent, yPercent, id: crypto.randomUUID(), image: selectedTopping.image, name: selectedTopping.name }]);
-    onToppingPlaced?.(selectedTopping.name);
+    addToppingName(selectedTopping.name);
 
     playPlaceSound();
   };

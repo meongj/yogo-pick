@@ -1,57 +1,26 @@
-import { useCallback, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { ToppingSelector } from "../components/ToppingSelector";
 import { YogurtBowl } from "../components/YogurtBowl";
-import type { Topping } from "../types/Topping";
 import { CaptureButton } from "../components/CaptureButton";
 import { useNavigate } from "react-router-dom";
 import { BottomNav } from "../components/BottomNav";
-import { useConvexAuth } from "convex/react";
 import { CreateBowlModal } from "../components/CreateBowlModal";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 
 function CreateBowlPage() {
-  const [selectedTopping, setSelectedTopping] = useState<Topping | null>(null);
-  const [toppingNames, setToppingNames] = useState<string[]>([]);
   const captureRef = useRef<HTMLDivElement>(null);
-  const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
-  const { isAuthenticated } = useConvexAuth();
-
-  // 토핑 선택시 리렌더링 방지
-  const onToppingSelect = useCallback((topping: Topping) => {
-    setSelectedTopping(topping);
-  }, []); // 처음 한번만 실행됨
-
-  const handleToppingPlaced = useCallback((name: string) => {
-    setToppingNames((prev) => {
-      if (prev.includes(name)) {
-        return prev;
-      }
-      return [...prev, name];
-    });
-  }, []);
 
   return (
     <div className="z-0 mx-auto h-screen max-w-md overflow-x-hidden overflow-y-hidden bg-amber-50">
-      <ToppingSelector onToppingSelect={onToppingSelect} />
-      <YogurtBowl selectedTopping={selectedTopping} ref={captureRef} onToppingPlaced={handleToppingPlaced} />
-      <CaptureButton
-        ref={captureRef}
-        onClick={() => navigate("/album")}
-        ingredients={toppingNames}
-        isAuthenticated={isAuthenticated}
-        onUnauthorized={() => {
-          setShowModal(true);
-          setSelectedTopping(null);
-        }}
-        onLoadingChange={setIsLoading}
-      />
+      <ToppingSelector />
+      <YogurtBowl ref={captureRef} />
+      <CaptureButton ref={captureRef} onClick={() => navigate("/album")} onLoadingChange={setIsLoading} />
       <BottomNav isActive="Make" />
 
-      {showModal && <CreateBowlModal isOpen={showModal} onClose={() => setShowModal(false)} />}
-
+      <CreateBowlModal />
       {isLoading && <LoadingOverlay text="저장 중...👩🏻‍🍳" />}
     </div>
   );

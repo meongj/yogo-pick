@@ -13,10 +13,8 @@ import { useState } from "react";
 import type { Topping } from "../types/Topping";
 import { useSound } from "../hooks/useSound";
 import hover from "../../public/sound/hover.mp3";
-
-interface ToppingSelectorProps {
-  onToppingSelect: (topping: Topping) => void;
-}
+import { useSetAtom } from "jotai";
+import { selectedToppingAtom } from "@/stores/createBowl";
 
 const toppings = [
   { id: "strawberry", name: "딸기", image: strawberry },
@@ -34,13 +32,15 @@ const toppings = [
 
 // 토핑 선택 버튼들 (가로로 슬라이더)
 // 토핑은 1개씩만 선택할 수 있다
-export function ToppingSelector({ onToppingSelect }: ToppingSelectorProps) {
+export function ToppingSelector() {
+  // 선택한 토핑 set
+  const setSelectedTopping = useSetAtom(selectedToppingAtom);
   const [hoverTopping, setHoverTopping] = useState<string>(""); // id
 
   const playSelectSound = useSound(hover);
 
   const handleSelect = (topping: Topping) => {
-    onToppingSelect(topping);
+    setSelectedTopping(topping);
     playSelectSound();
   };
 
