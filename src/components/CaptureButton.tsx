@@ -2,20 +2,24 @@ import html2canvas from "html2canvas";
 import type { RefObject } from "react";
 import { useState } from "react";
 import saveBtn from "../../public/images/icons/saveBtn.png";
-import { useMutation } from "convex/react";
+import { useConvexAuth, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { toast } from "../components/Toaster";
+import { useAtomValue, useSetAtom } from "jotai";
+import { selectedToppingAtom, showModalAtom, toppingNamesAtom } from "@/stores/createBowl";
 
 interface CaptureButtonProps {
   ref: RefObject<HTMLDivElement | null>;
   onClick?: () => void;
-  ingredients: string[];
-  isAuthenticated: boolean;
-  onUnauthorized: () => void;
   onLoadingChange?: (isLoading: boolean) => void;
 }
 
-export function CaptureButton({ ref, onClick, ingredients, isAuthenticated, onUnauthorized, onLoadingChange }: CaptureButtonProps) {
+export function CaptureButton({ ref, onClick, onLoadingChange }: CaptureButtonProps) {
+  const ingredients = useAtomValue(toppingNamesAtom);
+  const { isAuthenticated } = useConvexAuth();
+  const setShowModal = useSetAtom(showModalAtom);
+  const setSelectedTopping = useSetAtom(selectedToppingAtom);
+
   const generateUploadUrl = useMutation(api.yogurtBowls.generateUploadUrl);
   const saveYogurtBowl = useMutation(api.yogurtBowls.saveYogurtBowl);
   const [isLoading, setIsLoading] = useState(false);
@@ -28,7 +32,8 @@ export function CaptureButton({ ref, onClick, ingredients, isAuthenticated, onUn
     try {
       // 로그인 되어 있지 않다면 저장할 수 없다
       if (!isAuthenticated) {
-        onUnauthorized?.();
+        setShowModal(true);
+        setSelectedTopping(null);
         setIsLoading(false);
         onLoadingChange?.(false);
         return;
