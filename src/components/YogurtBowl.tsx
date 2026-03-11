@@ -32,8 +32,7 @@ export const YogurtBowl = memo(({ ref }: YogurtBowlProps) => {
     const handleMouseMove = (e: MouseEvent) => {
       mousePosRef.current = { x: e.clientX, y: e.clientY }; // 위치 저장
       if (cursorImageRef.current) {
-        cursorImageRef.current.style.left = `${e.clientX - 10}px`;
-        cursorImageRef.current.style.top = `${e.clientY - 10}px`;
+        cursorImageRef.current.style.transform = `translate(${e.clientX - 10}px, ${e.clientY - 10}px)`;
       }
     };
 
@@ -47,8 +46,7 @@ export const YogurtBowl = memo(({ ref }: YogurtBowlProps) => {
   // 토핑 이미지가 바뀔 때 현재 마우스 위치로 초기화
   useEffect(() => {
     if (cursorImageRef.current) {
-      cursorImageRef.current.style.left = `${mousePosRef.current.x - 10}px`;
-      cursorImageRef.current.style.top = `${mousePosRef.current.y - 10}px`;
+      cursorImageRef.current.style.transform = `translate(${mousePosRef.current.x - 10}px, ${mousePosRef.current.y - 10}px)`;
     }
   }, [selectedTopping]);
 
@@ -135,6 +133,8 @@ export const YogurtBowl = memo(({ ref }: YogurtBowlProps) => {
           className="z-50 h-[75px] w-[75px] object-contain"
           style={{
             position: "fixed",
+            left: 0,
+            top: 0,
             pointerEvents: "none", // 마우스 이벤트 차단 방지
           }}
           ref={cursorImageRef} // ref 토핑위치 연결
